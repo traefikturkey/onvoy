@@ -5,5 +5,5 @@
 
 To run copy and paste the line below on a fresh ubuntu server setup
 ```
-curl -s https://raw.githubusercontent.com/traefikturkey/onvoy/master/ubuntu/bash/setup.sh?$(date +%s) | /bin/bash -s | tee build.log
+curl -s https://raw.githubusercontent.com/traefikturkey/onvoy/master/ubuntu/bash/docker_server_setup.sh?$(date +%s) | /bin/bash -s | tee build.log
 ```
