@@ -8,3 +8,8 @@ curl -s https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bas
 #### [Notes](/traefikturkey/onvoy/blob/master/proxmox/notes) Section
 - - - 
 this section contains configuration files and commands that are used to setup things, it should be considered alpha quality code as its has not been tested as much!
+
+
+#### Use the Source Luke
+- - -
+Some of the code and notes here originally came from [iLude's Gist](https://gist.github.com/ilude/32aec45964bc1207810f7e6e49544064) but is now being fully maintained here!
