@@ -1,5 +1,5 @@
 # copy and paste oneliner below to run
-# curl -s https://gist.githubusercontent.com/ilude/32aec45964bc1207810f7e6e49544064/raw/%21proxmox_setup.sh?$(date +%s) | /bin/bash -s
+# curl -s https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/setup.sh?$(date +%s) | /bin/bash -s
 
 # Disable Commercial Repo
 sed -i "s/^deb/\#deb/" /etc/apt/sources.list.d/pve-enterprise.list
