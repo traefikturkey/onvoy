@@ -50,6 +50,7 @@ sudo apt install -y \
     lsb-release \
     make \
     nano \
+    bash-completion \
     net-tools \
     sysstat \
     software-properties-common \
