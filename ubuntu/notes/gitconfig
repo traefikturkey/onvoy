@@ -3,7 +3,7 @@
 [push]
 	default = current
 [branch]
-	autosetuprebase = alway
+	autosetuprebase = always
 [push]
   default = current
 
