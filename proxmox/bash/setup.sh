@@ -11,12 +11,12 @@ echo "deb http://download.proxmox.com/debian/pve $(grep "VERSION=" /etc/os-relea
 echo "DPkg::Post-Invoke { \"dpkg -V proxmox-widget-toolkit | grep -q '/proxmoxlib\.js$'; if [ \$? -eq 1 ]; then { echo 'Removing subscription nag from UI...'; sed -i '/data.status/{s/\!//;s/Active/NoMoreNagging/}' /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js; }; fi\"; };" > /etc/apt/apt.conf.d/99-proxmox-no-nag-script
 
 # setup dark-theme to reinstall on upgrade
-THEME_APT_SCRIPT_FILE=/etc/apt/apt.conf.d/99-proxmox-dark-theme
-if [ ! -f "$THEME_APT_SCRIPT_FILE" ]; then
-tee -a "$THEME_APT_SCRIPT_FILE" >/dev/null <<'EOF'
-DPkg::Post-Invoke { "wget https://raw.githubusercontent.com/Weilbyte/PVEDiscordDark/master/PVEDiscordDark.sh && bash PVEDiscordDark.sh install || true"; };
-EOF
-fi
+# THEME_APT_SCRIPT_FILE=/etc/apt/apt.conf.d/99-proxmox-dark-theme
+# if [ ! -f "$THEME_APT_SCRIPT_FILE" ]; then
+# tee -a "$THEME_APT_SCRIPT_FILE" >/dev/null <<'EOF'
+# DPkg::Post-Invoke { "wget https://raw.githubusercontent.com/Weilbyte/PVEDiscordDark/master/PVEDiscordDark.sh && bash PVEDiscordDark.sh install || true"; };
+# EOF
+# fi
 
 apt-get update
 apt-get dist-upgrade -y
@@ -33,8 +33,6 @@ if ! [[ -f /etc/birth_certificate ]]; then
   echo "Creating /etc/birth_certificate"
   date > /etc/birth_certificate
 fi
-
-
 
 # check if reboot is required 
 if [ -f /var/run/reboot-required ]; then
