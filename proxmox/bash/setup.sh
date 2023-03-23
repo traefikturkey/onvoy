@@ -27,8 +27,11 @@ fi
 # EOF
 # fi
 
+echo "Starting updates..."
 apt-get update
 apt-get dist-upgrade -y
+echo "Updates Completed!"
+
 
 # disable kerbose authentication for sshd, this will speed up logins
 sed -i 's/GSSAPIAuthentication yes/GSSAPIAuthentication no/g' /etc/ssh/sshd_config
@@ -45,5 +48,6 @@ fi
 
 # check if reboot is required 
 if [ -f /var/run/reboot-required ]; then
+  echo "Rebooting the server now..."
   sudo reboot
 fi
