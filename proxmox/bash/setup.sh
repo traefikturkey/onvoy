@@ -12,7 +12,13 @@ echo "DPkg::Post-Invoke { \"dpkg -V proxmox-widget-toolkit | grep -q '/proxmoxli
 
 # Proxmox now supports dark mode natively
 # https://www.servethehome.com/proxmox-ve-7-4-released-with-dark-mode-support/
-#
+# the following will uninstall Weilbyte/PVEDiscordDark darkmode if it already exists
+if [ -f /etc/apt/apt.conf.d/99-proxmox-dark-theme ]; then
+  wget https://raw.githubusercontent.com/Weilbyte/PVEDiscordDark/master/PVEDiscordDark.sh && bash PVEDiscordDark.sh uninstall || true
+  rm PVEDiscordDark.sh
+  sudo rm /etc/apt/apt.conf.d/99-proxmox-dark-theme
+fi
+
 # setup dark-theme to reinstall on upgrade
 # THEME_APT_SCRIPT_FILE=/etc/apt/apt.conf.d/99-proxmox-dark-theme
 # if [ ! -f "$THEME_APT_SCRIPT_FILE" ]; then
