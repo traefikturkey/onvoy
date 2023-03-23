@@ -10,6 +10,9 @@ echo "deb http://download.proxmox.com/debian/pve $(grep "VERSION=" /etc/os-relea
 # setup no nag script to run on upgrade
 echo "DPkg::Post-Invoke { \"dpkg -V proxmox-widget-toolkit | grep -q '/proxmoxlib\.js$'; if [ \$? -eq 1 ]; then { echo 'Removing subscription nag from UI...'; sed -i '/data.status/{s/\!//;s/Active/NoMoreNagging/}' /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js; }; fi\"; };" > /etc/apt/apt.conf.d/99-proxmox-no-nag-script
 
+# Proxmox now supports dark mode natively
+# https://www.servethehome.com/proxmox-ve-7-4-released-with-dark-mode-support/
+#
 # setup dark-theme to reinstall on upgrade
 # THEME_APT_SCRIPT_FILE=/etc/apt/apt.conf.d/99-proxmox-dark-theme
 # if [ ! -f "$THEME_APT_SCRIPT_FILE" ]; then
