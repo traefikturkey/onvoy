@@ -16,7 +16,7 @@ echo "DPkg::Post-Invoke { \"dpkg -V proxmox-widget-toolkit | grep -q '/proxmoxli
 if [ -f /etc/apt/apt.conf.d/99-proxmox-dark-theme ]; then
   wget https://raw.githubusercontent.com/Weilbyte/PVEDiscordDark/master/PVEDiscordDark.sh && bash PVEDiscordDark.sh uninstall || true
   rm PVEDiscordDark.sh
-  sudo rm /etc/apt/apt.conf.d/99-proxmox-dark-theme
+  rm /etc/apt/apt.conf.d/99-proxmox-dark-theme
 fi
 
 # setup dark-theme to reinstall on upgrade
