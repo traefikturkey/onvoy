@@ -271,6 +271,10 @@ fi
 EOF
 sudo chmod +x /etc/cron.weekly/update-system
 
+# if running on a proxmox server uncomment the following
+# sudo apt install qemu-guest-agent -y
+
+
 ###########################################################
 # cleanup any mess we made
 ###########################################################
