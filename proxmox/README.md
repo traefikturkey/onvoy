@@ -9,6 +9,8 @@ curl -s https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bas
 - - - 
 this section contains configuration files and commands that are used to setup things, it should be considered alpha quality code as its has not been tested as much!
 
+other scripts for proxmox can be found here: [https://tteck.github.io/Proxmox/](https://tteck.github.io/Proxmox/)
+
 
 #### Use the Source Luke
 - - -
