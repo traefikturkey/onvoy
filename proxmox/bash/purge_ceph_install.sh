@@ -1,3 +1,6 @@
+# copy and paste oneliner below to run
+# curl -s https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/purge_ceph_install.sh?$(date +%s) | /bin/bash -s
+
 rm -rf /etc/systemd/system/ceph*
 killall -9 ceph-mon ceph-mgr ceph-mds
 rm -rf /var/lib/ceph/mon/  /var/lib/ceph/mgr/  /var/lib/ceph/mds/
