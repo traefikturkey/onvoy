@@ -2,6 +2,7 @@
 # curl -s https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/purge_ceph_install.sh?$(date +%s) | /bin/bash -s
 
 # These commands will nuke the proxmox ceph install and allow you to reinstall
+# https://forum.proxmox.com/threads/how-to-clean-up-a-bad-ceph-config-and-start-from-scratch.68949/post-310629
 
 rm -rf /etc/systemd/system/ceph*
 killall -9 ceph-mon ceph-mgr ceph-mds
