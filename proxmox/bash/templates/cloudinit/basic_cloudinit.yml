@@ -1,6 +1,6 @@
 #cloud-config
 manage_etc_hosts: true
-user: $CLOUND_INIT__USERNAME
+user: $CLOUND_INIT_USERNAME
 password: $CLOUND_INIT_PASSWORD
 chpasswd:
   expire: False
