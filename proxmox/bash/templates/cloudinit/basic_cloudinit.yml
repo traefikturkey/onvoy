@@ -13,7 +13,8 @@ package_upgrade: true
 packages:
   - bmon 
   - bwm-ng 
-  - curl 
+  - curl
+  - git
   - htop 
   - iftop 
   - iotop 
@@ -28,12 +29,9 @@ packages:
   - rsync 
   - strace 
   - sysstat 
-  - snmpd 
   - sudo 
   - tcpdump 
   - tmux 
-  - vlan 
-  - vnstat
   - zsh 
   - zsh-autosuggestions 
   - zsh-syntax-highlighting
