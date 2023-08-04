@@ -1,0 +1,47 @@
+#cloud-config
+manage_etc_hosts: true
+user: $CLOUND_INIT__USERNAME
+password: $CLOUND_INIT_PASSWORD
+chpasswd:
+  expire: False
+users:
+  - name: $CLOUND_INIT_USERNAME
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys:
+      - $CLOUND_INIT_PUBLIC_KEY
+package_upgrade: true
+packages:
+  - bmon 
+  - bwm-ng 
+  - curl 
+  - htop 
+  - iftop 
+  - iotop 
+  - libpam-systemd 
+  - locales-all 
+  - locate 
+  - make
+  - nano 
+  - net-tools 
+  - ntpdate 
+  - qemu-guest-agent 
+  - rsync 
+  - strace 
+  - sysstat 
+  - snmpd 
+  - sudo 
+  - tcpdump 
+  - tmux 
+  - vlan 
+  - vnstat
+  - zsh 
+  - zsh-autosuggestions 
+  - zsh-syntax-highlighting
+runcmd:
+  - snap remove lxd
+  - snap remove core18
+  - snap remove snapd
+  - apt purge snapd -y
+  - apt autoremove -y
+  - apt autoclean -y
+  
