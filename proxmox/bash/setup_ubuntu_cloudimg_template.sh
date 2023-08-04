@@ -7,6 +7,8 @@ export VM_STORAGE=${VM_STORAGE:-local-lvm}
 
 wget -nc https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
 wget -nc https://github.com/traefikturkey/onvoy/raw/master/proxmox/bash/templates/cloudinit/basic_cloudinit.yml
+
+mkdir -p /var/lib/vz/snippets/
 envsubst < basic_cloudinit.yml > /var/lib/vz/snippets/user-data.yml
 
 # create a new VM
