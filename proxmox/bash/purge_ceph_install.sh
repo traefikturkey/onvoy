@@ -9,6 +9,8 @@ killall -9 ceph-mon ceph-mgr ceph-mds
 rm -rf /var/lib/ceph/mon/  /var/lib/ceph/mgr/  /var/lib/ceph/mds/
 pveceph purge
 apt -y purge ceph-mon ceph-osd ceph-mgr ceph-mds
+rm /etc/pve/ceph.*
+rm /etc/pve/priv/ceph.*
 rm /etc/init.d/ceph
 for i in $(apt search ceph | grep installed | awk -F/ '{print $1}'); do apt reinstall $i; done
 dpkg-reconfigure ceph-base
