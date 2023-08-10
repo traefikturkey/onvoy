@@ -1,6 +1,9 @@
 # copy and paste oneliner below to run
 # curl -s https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/setup.sh?$(date +%s) | /bin/bash -s
 
+# update cpu microcode firmware - https://tteck.github.io/Proxmox/
+bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/misc/microcode.sh)"
+
 # Disable Commercial Repo
 sed -i "s/^deb/\#deb/" /etc/apt/sources.list.d/pve-enterprise.list
 
