@@ -1,14 +1,14 @@
 #cloud-config
 manage_etc_hosts: true
-user: $CLOUND_INIT_USERNAME
-password: $CLOUND_INIT_PASSWORD
+user: $CLOUD_INIT_USERNAME
+password: $CLOUD_INIT_PASSWORD
 chpasswd:
   expire: False
 users:
-  - name: $CLOUND_INIT_USERNAME
+  - name: $CLOUD_INIT_USERNAME
     sudo: ALL=(ALL) NOPASSWD:ALL
     ssh_authorized_keys:
-      - $CLOUND_INIT_PUBLIC_KEY
+      - $CLOUD_INIT_PUBLIC_KEY
 package_upgrade: true
 packages:
   - bmon 
