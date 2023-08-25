@@ -12,7 +12,6 @@ echo "deb http://download.proxmox.com/debian/pve $VERSION pve-no-subscription" >
 # add non-free-firmware repo for microcode firmware
 echo "deb https://deb.debian.org/debian $VERSION main non-free-firmware" >> /etc/apt/sources.list.d/pve-no-enterprise.list
 
-
 # add ceph no-subscription repo
 echo "deb http://download.proxmox.com/debian/ceph-quincy $VERSION no-subscription" >> /etc/apt/sources.list.d/ceph.list
 
