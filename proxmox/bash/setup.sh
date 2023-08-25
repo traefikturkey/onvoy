@@ -13,7 +13,7 @@ echo "deb http://download.proxmox.com/debian/pve $VERSION pve-no-subscription" >
 echo "deb https://deb.debian.org/debian $VERSION main non-free-firmware" >> /etc/apt/sources.list.d/pve-no-enterprise.list
 
 # add ceph no-subscription repo
-echo "deb http://download.proxmox.com/debian/ceph-quincy $VERSION no-subscription" >> /etc/apt/sources.list.d/ceph.list
+echo "deb http://download.proxmox.com/debian/ceph-quincy $VERSION no-subscription" > /etc/apt/sources.list.d/ceph.list
 
 # setup no nag script to run on upgrade
 echo "DPkg::Post-Invoke { \"dpkg -V proxmox-widget-toolkit | grep -q '/proxmoxlib\.js$'; if [ \$? -eq 1 ]; then { echo 'Removing subscription nag from UI...'; sed -i '/data.status/{s/\!//;s/Active/NoMoreNagging/}' /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js; }; fi\"; };" > /etc/apt/apt.conf.d/99-proxmox-no-nag-script
