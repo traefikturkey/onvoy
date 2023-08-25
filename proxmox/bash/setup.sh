@@ -10,7 +10,7 @@ sed -i "s/^deb/\#deb/" /etc/apt/sources.list.d/pve-enterprise.list
 echo "deb http://download.proxmox.com/debian/pve $VERSION pve-no-subscription" > /etc/apt/sources.list.d/pve-no-enterprise.list
 
 # add non-free-firmware repo for microcode firmware
-echo "deb https://deb.debian.org/debian $VERSION main non-free-firmware" >> /etc/apt/sources.list.d/pve-no-enterprise.listl
+echo "deb https://deb.debian.org/debian $VERSION main non-free-firmware" >> /etc/apt/sources.list.d/pve-no-enterprise.list
 
 
 # add ceph no-subscription repo
