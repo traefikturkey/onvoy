@@ -7,6 +7,7 @@ export CLOUD_INIT_PASSWORD=<your_password_here>
 export CLOUD_INIT_PUBLIC_KEY=$(cat ~/.ssh/id_ed25519.pub)
 export VM_ID=${VM_ID:-9000}
 export VM_STORAGE=${VM_STORAGE:-local-lvm}
+export VM_NAME=${VM_NAME:-ubuntu-22.04-server-template}
 
 echo "downloading cloudimg file..."
 wget -nc https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
@@ -31,7 +32,7 @@ echo "importing cloudimg $VM_STORAGE storage..."
 qm importdisk $VM_ID jammy-server-cloudimg-amd64.img $VM_STORAGE > /dev/null
 
 # finally attach the new disk to the VM as scsi drive
-qm set $VM_ID --name "ubuntu-22.04-server"
+qm set $VM_ID --name "${VM_NAME}"
 qm set $VM_ID --scsihw virtio-scsi-pci --scsi0 $VM_STORAGE:vm-9000-disk-0
 qm set $VM_ID --ide2 $VM_STORAGE:cloudinit
 qm set $VM_ID --efidisk0 $VM_STORAGE:0,pre-enrolled-keys=1,efitype=4m
