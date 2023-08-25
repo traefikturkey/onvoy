@@ -1,5 +1,7 @@
 #!/bin/bash 
 
+# curl -s https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/setup_ubuntu_cloudimg_template.sh > setup_ubuntu_cloudimg_template.sh
+
 export CLOUND_INIT_USERNAME=<your_username_here>
 export CLOUND_INIT_PASSWORD=<your_password_here>
 export CLOUND_INIT_PUBLIC_KEY=$(cat ~/.ssh/authorized_keys | grep <your_email_here> )
