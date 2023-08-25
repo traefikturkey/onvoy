@@ -1,3 +1,4 @@
+#!/bin/bash
 # copy and paste oneliner below to run
 # curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/setup.sh?$(date +%s)" | /bin/bash -s
 
