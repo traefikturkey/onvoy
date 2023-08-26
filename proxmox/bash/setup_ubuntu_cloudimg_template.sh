@@ -7,7 +7,7 @@ export CLOUD_INIT_PASSWORD=<your_password_here>
 export CLOUD_INIT_PUBLIC_KEY=$(cat ~/.ssh/id_ed25519.pub)
 export VM_ID=${VM_ID:-9000}
 export VM_STORAGE=${VM_STORAGE:-local-lvm}
-export VM_NAME=${VM_NAME:-ubuntu-22.04-server-template}
+export VM_NAME=${VM_NAME:-ubuntu-server-22.04-template}
 
 echo "downloading cloudimg file..."
 wget -nc https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
