@@ -2,12 +2,18 @@
 
 # curl -s https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/setup_ubuntu_cloudimg_template.sh > setup_ubuntu_cloudimg_template.sh
 
-export CLOUD_INIT_USERNAME=<your_username_here>
-export CLOUD_INIT_PASSWORD=<your_password_here>
-export CLOUD_INIT_PUBLIC_KEY=$(cat ~/.ssh/id_ed25519.pub)
-export VM_ID=${VM_ID:-9000}
-export VM_STORAGE=${VM_STORAGE:-local-lvm}
-export VM_NAME=${VM_NAME:-ubuntu-server-22.04-template}
+if [[ ! -f .env ]]; then
+   echo "CLOUD_INIT_USERNAME=${CLOUD_INIT_USERNAME:?Please configure CLOUD_INIT_USERNAME in the .env file}" > .env
+   echo "CLOUD_INIT_PASSWORD=${CLOUD_INIT_PASSWORD:?Please configure CLOUD_INIT_PASSWORD in the .env file}" >> .env
+   echo "CLOUD_INIT_PUBLIC_KEY=$(cat ~/.ssh/id_ed25519.pub)" >> .env
+   echo "VM_ID=${VM_ID:-9000}" >> .env
+   echo "VM_STORAGE=${VM_STORAGE:-local-lvm}" >> .env
+   echo "VM_NAME=${VM_NAME:-ubuntu-server-22.04-template}" >> .env
+
+   echo "please edit the .env file and then rerun the same command to create the template VM"
+else
+   eval export $(cat .env)
+fi
 
 echo "installing cloudinit and guest-agent dependencies..."
 apt update
