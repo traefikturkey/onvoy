@@ -9,19 +9,24 @@ export VM_ID=${VM_ID:-9000}
 export VM_STORAGE=${VM_STORAGE:-local-lvm}
 export VM_NAME=${VM_NAME:-ubuntu-server-22.04-template}
 
-echo "downloading cloudimg file..."
-wget -nc https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
-
-echo "downloading cloudinit file..."
-wget -nc https://github.com/traefikturkey/onvoy/raw/master/proxmox/bash/templates/cloudinit/basic_cloudinit.yml
-
 echo "installing cloudinit and guest-agent dependencies..."
 apt update
 apt install -y cloud-init libguestfs-tools
 
-echo "adding guest-agent to cloudimg..."
-virt-customize --install qemu-guest-agent -a jammy-server-cloudimg-amd64.img
+if [[ ! -f jammy-server-cloudimg-amd64.img ]]; then 
+   echo "downloading cloudimg file..."
+   wget -nc https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
 
+   echo "adding guest-agent to cloudimg..."
+   virt-customize --install qemu-guest-agent -a jammy-server-cloudimg-amd64.img
+fi
+
+if [[ ! -f basic_cloudinit.yml ]]; then 
+   echo "downloading cloudinit file..."
+   wget -nc https://github.com/traefikturkey/onvoy/raw/master/proxmox/bash/templates/cloudinit/basic_cloudinit.yml
+fi
+
+echo "setup cloudinit file..."
 mkdir -p /var/lib/vz/snippets/
 envsubst < basic_cloudinit.yml > /var/lib/vz/snippets/user-data.yml
 
