@@ -11,6 +11,7 @@ if [[ ! -f .env ]]; then
    echo "VM_NAME=${VM_NAME:-ubuntu-server-22.04-template}" >> .env
 
    echo "please edit the .env file and then rerun the same command to create the template VM"
+   exit 1
 else
    eval export $(cat .env)
 fi
