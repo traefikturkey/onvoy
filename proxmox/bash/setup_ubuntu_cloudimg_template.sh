@@ -56,14 +56,23 @@ qm set $VM_ID --cicustom "user=local:snippets/user-data.yml"
 echo "starting template vm..."
 qm start $VM_ID
 
-echo "waiting for template vm to complete initial setup..."
-secs=110
+echo "waiting for template vm boot..."
+secs=75
 while [ $secs -gt 0 ]; do
    echo -ne "\t$secs seconds remaining\033[0K\r"
    sleep 1
    : $((secs--))
 done
-echo "initial setup complete..."
+echo ""
+echo "booting complete..."
+
+BOOT_COMPLETE="0"
+while [[ "$BOOT_COMPLETE" -ne "1" ]]; do
+   BOOT_COMPLETE=$(qm guest exec $VM_ID -- /bin/bash -c 'ls /var/lib/cloud/instance/boot-finished | wc -l | tr -d "\n"' | jq '."out-data"')
+   sleep 5
+done
+
+qm guest exec $VM_ID -- /bin/bash -c 'truncate -s 0 /etc/machine-id && rm /var/lib/dbus/machine-id && ln -s /var/lib/dbus/machine-id /etc/machine-id'
 
 echo "shutting down and converting to template VM..."
 qm shutdown $VM_ID
