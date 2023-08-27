@@ -44,8 +44,15 @@ runcmd:
   - apt purge snapd -y
   - apt autoremove -y
   - apt autoclean -y
-  - cloud-init clean 
   - history -c
   - history -w
   - fstrim -av
   - systemctl start qemu-guest-agent
+
+network:
+  version: 2
+  ethernets:
+    eth0:
+      dhcp4: true
+      dhcp-identifier: mac
+
