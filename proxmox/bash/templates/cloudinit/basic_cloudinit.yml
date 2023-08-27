@@ -48,3 +48,4 @@ runcmd:
   - history -c
   - history -w
   - fstrim -av
+  - systemctl start qemu-guest-agent
