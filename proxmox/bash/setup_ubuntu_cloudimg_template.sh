@@ -20,17 +20,17 @@ fi
 
 if [[ ! -f /tmp/jammy-server-cloudimg-amd64.img ]]; then 
    echo "downloading cloudimg file..."
-   curl -s https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img >/tmp/jammy-server-cloudimg-amd64.img
+   curl -s https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img > /tmp/jammy-server-cloudimg-amd64.img
 fi
 
 echo "downloading template cloudinit file..."
-curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/templates/cloudinit/template_cloudinit.yml?$(date +%s)" -o /tmp/template_cloudinit.yml
+curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/templates/cloudinit/template_cloudinit.yml?$(date +%s)" > /tmp/template_cloudinit.yml
 mkdir -p /var/lib/vz/snippets/
 envsubst < /tmp/template_cloudinit.yml > /var/lib/vz/snippets/template-user-data.yml
 #rm -f /tmp/template_cloudinit.yml
 
 echo "downloading clone cloudinit file..."
-curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/templates/cloudinit/clone_cloudinit.yml?$(date +%s)" -o /tmp/clone_cloudinit.yml
+curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/templates/cloudinit/clone_cloudinit.yml?$(date +%s)" > /tmp/clone_cloudinit.yml
 envsubst < /tmp/clone_cloudinit.yml > /var/lib/vz/snippets/clone-user-data.yml
 #rm -f /tmp/clone_cloudinit.yml
 
