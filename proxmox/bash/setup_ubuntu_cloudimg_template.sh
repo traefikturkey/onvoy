@@ -72,7 +72,7 @@ while [[ "$BOOT_COMPLETE" -ne "1" ]]; do
    sleep 5
 done
 
-qm guest exec $VM_ID -- /bin/bash -c 'truncate -s 0 /etc/machine-id && rm /var/lib/dbus/machine-id && ln -s /var/lib/dbus/machine-id /etc/machine-id'
+qm guest exec $VM_ID -- /bin/bash -c 'truncate -s 0 /etc/machine-id && rm /var/lib/dbus/machine-id && ln -s /etc/machine-id  /var/lib/dbus/machine-id'
 
 echo "shutting down and converting to template VM..."
 qm shutdown $VM_ID
