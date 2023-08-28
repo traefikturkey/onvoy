@@ -14,6 +14,7 @@ other scripts for proxmox can be found here: [https://tteck.github.io/Proxmox/](
 Notes about Debian 12 Bookworm: [https://www.debian.org/releases/bookworm/amd64/release-notes/ch-information.html#non-free-split](https://www.debian.org/releases/bookworm/amd64/release-notes/ch-information.html#non-free-split)
 
 Cloudinit Notes:
+
 https://gist.github.com/KrustyHack/fa39e509b5736703fb4a3d664157323f
 https://pve.proxmox.com/wiki/Cloud-Init_Support
 https://pve.proxmox.com/wiki/Cloud-Init_FAQ
