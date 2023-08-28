@@ -53,7 +53,7 @@ qm set $VM_ID --agent enabled=1,type=virtio,fstrim_cloned_disks=1 --localtime 1
 # alternative, but the user-data.yml already has this
 # qm set $VM_ID --sshkey ~/.ssh/id_ed25519.pub
 
-read -p "Press any key to resume ..."
+qm resize $VM_ID scsi0 +8G
 
 echo "starting template vm..."
 qm start $VM_ID
@@ -70,17 +70,14 @@ echo "booting complete, waiting for QEMU guest agent to start..."
 
 BOOT_COMPLETE="0"
 while [[ "$BOOT_COMPLETE" -ne "1" ]]; do
-   BOOT_COMPLETE=$(qm guest exec $VM_ID -- /bin/bash -c 'ls /var/lib/cloud/instance/boot-finished | wc -l | tr -d "\n"' | jq -r '."out-data"')
    sleep 5
+   BOOT_COMPLETE=$(qm guest exec $VM_ID -- /bin/bash -c 'ls /var/lib/cloud/instance/boot-finished | wc -l | tr -d "\n"' | jq -r '."out-data"')
 done
-
+echo "linux sysprep..."
 qm guest exec $VM_ID -- /bin/bash -c 'truncate -s 0 /etc/machine-id && chmod 600 /etc/machine-id && rm /var/lib/dbus/machine-id && ln -s /etc/machine-id  /var/lib/dbus/machine-id'
 
 echo "shutting down and converting to template VM..."
 qm shutdown $VM_ID
 qm stop $VM_ID
-
-qm resize $VM_ID scsi0 +8G
-
 qm template $VM_ID
 echo "Operations Completed!"
