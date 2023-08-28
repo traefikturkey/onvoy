@@ -10,8 +10,15 @@ curl -s https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bas
 this section contains configuration files and commands that are used to setup things, it should be considered alpha quality code as its has not been tested as much!
 
 other scripts for proxmox can be found here: [https://tteck.github.io/Proxmox/](https://tteck.github.io/Proxmox/)
+
 Notes about Debian 12 Bookworm: [https://www.debian.org/releases/bookworm/amd64/release-notes/ch-information.html#non-free-split](https://www.debian.org/releases/bookworm/amd64/release-notes/ch-information.html#non-free-split)
 
+Cloudinit Notes:
+https://gist.github.com/KrustyHack/fa39e509b5736703fb4a3d664157323f
+https://pve.proxmox.com/wiki/Cloud-Init_Support
+https://pve.proxmox.com/wiki/Cloud-Init_FAQ
+https://georgev.design/blog/create-proxmox-cloud-init-templates
+https://austinsnerdythings.com/2021/08/30/how-to-create-a-proxmox-ubuntu-cloud-init-image/
 
 #### Use the Source Luke
 - - -
