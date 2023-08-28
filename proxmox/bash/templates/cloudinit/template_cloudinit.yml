@@ -27,7 +27,7 @@ packages:
   - make
   - nano 
   - net-tools 
-  - ntpdate 
+  - ntpsec 
   - qemu-guest-agent 
   - rsync 
   - strace 
