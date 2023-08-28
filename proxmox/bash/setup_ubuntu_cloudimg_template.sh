@@ -64,7 +64,7 @@ while [ $secs -gt 0 ]; do
    : $((secs--))
 done
 echo ""
-echo "booting complete..."
+echo "booting complete, waiting for QEMU guest agent to start..."
 
 BOOT_COMPLETE="0"
 while [[ "$BOOT_COMPLETE" -ne "1" ]]; do
