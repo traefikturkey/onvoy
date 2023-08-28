@@ -47,6 +47,7 @@ runcmd:
   - apt purge snapd -y
   - apt autoremove -y
   - apt autoclean -y
+  - cloud-init clean
   - history -c
   - history -w
   - fstrim -av
