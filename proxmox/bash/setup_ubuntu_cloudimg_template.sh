@@ -18,27 +18,27 @@ else
    eval export $(cat .env)
 fi
 
-if [[ ! -f jammy-server-cloudimg-amd64.img ]]; then 
+if [[ ! -f /tmp/jammy-server-cloudimg-amd64.img ]]; then 
    echo "downloading cloudimg file..."
-   wget -nc https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
+   curl -s https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img >/tmp/jammy-server-cloudimg-amd64.img
 fi
 
 echo "downloading template cloudinit file..."
 curl -s "https://github.com/traefikturkey/onvoy/edit/master/proxmox/bash/templates/cloudinit/template_cloudinit.yml?$(date +%s)" -o /tmp/template_cloudinit.yml
 mkdir -p /var/lib/vz/snippets/
 envsubst < /tmp/template_cloudinit.yml > /var/lib/vz/snippets/template-user-data.yml
-rm -f /tmp/template_cloudinit.yml
+#rm -f /tmp/template_cloudinit.yml
 
 echo "downloading clone cloudinit file..."
 curl -s "https://github.com/traefikturkey/onvoy/edit/master/proxmox/bash/templates/cloudinit/clone_cloudinit.yml?$(date +%s)" -o /tmp/clone_cloudinit.yml
 envsubst < /tmp/clone_cloudinit.yml > /var/lib/vz/snippets/clone-user-data.yml
-rm -f /tmp/clone_cloudinit.yml
+#rm -f /tmp/clone_cloudinit.yml
 
 echo "creating new VM..."
 qm create $VM_ID --memory 2048 --cores 4 --machine q35 --bios ovmf --net0 virtio,bridge=vmbr0 
 
 echo "importing cloudimg $VM_STORAGE storage..."
-qm importdisk $VM_ID jammy-server-cloudimg-amd64.img $VM_STORAGE > /dev/null
+qm importdisk $VM_ID /tmp/jammy-server-cloudimg-amd64.img $VM_STORAGE > /dev/null
 
 # finally attach the new disk to the VM as scsi drive
 qm set $VM_ID --name "${VM_NAME}"
