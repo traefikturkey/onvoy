@@ -40,7 +40,7 @@ qm importdisk $VM_ID jammy-server-cloudimg-amd64.img $VM_STORAGE > /dev/null
 
 # finally attach the new disk to the VM as scsi drive
 qm set $VM_ID --name "${VM_NAME}"
-qm set $VM_ID --scsihw virtio-scsi-pci --scsi0 $VM_STORAGE:vm-9000-disk-0,cache=writethrough,discard=on,ssd=1
+qm set $VM_ID --scsihw virtio-scsi-pci --scsi0 $VM_STORAGE:vm-$VM_ID-disk-0,cache=writethrough,discard=on,ssd=1
 qm set $VM_ID --scsi1 $VM_STORAGE:cloudinit
 qm set $VM_ID --efidisk0 $VM_STORAGE:0,pre-enrolled-keys=1,efitype=4m,size=528K
 qm set $VM_ID --boot c --bootdisk scsi0 --ostype l26
@@ -68,9 +68,11 @@ echo "booting complete, waiting for QEMU guest agent to start..."
 
 BOOT_COMPLETE="0"
 while [[ "$BOOT_COMPLETE" -ne "1" ]]; do
-   BOOT_COMPLETE=$(qm guest exec $VM_ID -- /bin/bash -c 'ls /var/lib/cloud/instance/boot-finished | wc -l | tr -d "\n"' | jq '."out-data"')
+   BOOT_COMPLETE=$(qm guest exec $VM_ID -- /bin/bash -c 'ls /var/lib/cloud/instance/boot-finished | wc -l | tr -d "\n"' | jq -r '."out-data"')
    sleep 5
 done
+
+qm resize $VM_ID $VM_STORAGE:vm-$VM_ID-disk-0 +8G
 
 qm guest exec $VM_ID -- /bin/bash -c 'truncate -s 0 /etc/machine-id && rm /var/lib/dbus/machine-id && ln -s /etc/machine-id  /var/lib/dbus/machine-id'
 
