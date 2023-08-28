@@ -40,8 +40,6 @@ qm create $VM_ID --memory 2048 --cores 4 --machine q35 --bios ovmf --net0 virtio
 echo "importing cloudimg $VM_STORAGE storage..."
 qm importdisk $VM_ID /tmp/jammy-server-cloudimg-amd64.img $VM_STORAGE > /dev/null
 
-read -p "Press any key to resume ..."
-
 # finally attach the new disk to the VM as scsi drive
 qm set $VM_ID --name "${VM_NAME}"
 qm set $VM_ID --scsihw virtio-scsi-pci --scsi0 $VM_STORAGE:vm-$VM_ID-disk-0,cache=writethrough,discard=on,ssd=1
