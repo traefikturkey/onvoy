@@ -5,8 +5,8 @@
 # qm stop 9000 --skiplock && qm destroy 9000 --destroy-unreferenced-disks --purge
 
 if [[ ! -f ~/.cloudimage.env ]]; then
-   echo 'CLOUD_INIT_USERNAME=<your_username_here>' > ~/.cloudimage.env
-   echo 'CLOUD_INIT_PASSWORD=<your_password_here>' >> ~/.cloudimage.env
+   echo 'CLOUD_INIT_USERNAME=${CLOUD_INIT_USERNAME:-anvil}' > ~/.cloudimage.env
+   echo 'CLOUD_INIT_PASSWORD=${CLOUD_INIT_PASSWORD:-super_password}' >> ~/.cloudimage.env
    echo 'CLOUD_INIT_PUBLIC_KEY=$(cat ~/.ssh/id_ed25519.pub)' >> ~/.cloudimage.env
    echo 'VM_ID=${VM_ID:-9000}' >> ~/.cloudimage.env
    echo 'VM_STORAGE=${VM_STORAGE:-local-lvm}' >> ~/.cloudimage.env
