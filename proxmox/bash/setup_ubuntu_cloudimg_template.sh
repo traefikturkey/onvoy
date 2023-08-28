@@ -14,9 +14,9 @@ if [[ ! -f ~/.cloudimage.env ]]; then
 
    echo "please edit the .env file and then rerun the same command to create the template VM"
    exit 1
-else
-   eval export $(cat ~/.cloudimage.env)
 fi
+
+eval export $(cat ~/.cloudimage.env)
 
 if [[ ! -f /tmp/jammy-server-cloudimg-amd64.img ]]; then 
    echo "downloading cloudimg file..."
