@@ -77,7 +77,7 @@ echo "linux sysprep..."
 qm guest exec $VM_ID -- /bin/bash -c 'truncate -s 0 /etc/machine-id && chmod 600 /etc/machine-id && rm /var/lib/dbus/machine-id && ln -s /etc/machine-id  /var/lib/dbus/machine-id'
 
 echo "shutting down and converting to template VM..."
-qm shutdown $VM_ID
-qm stop $VM_ID
-qm template $VM_ID
+#qm shutdown $VM_ID
+#qm stop $VM_ID
+#sqm template $VM_ID
 echo "Operations Completed!"
