@@ -1,5 +1,5 @@
 #cloud-config
-manage_etc_hosts: true
+manage_etc_hosts: false
 user: $CLOUD_INIT_USERNAME
 password: $CLOUD_INIT_PASSWORD
 chpasswd:
@@ -9,6 +9,7 @@ users:
     sudo: ALL=(ALL) NOPASSWD:ALL
     ssh_authorized_keys:
       - $CLOUD_INIT_PUBLIC_KEY
+package_update: true
 package_upgrade: true
 packages:
   - bmon 
@@ -38,6 +39,8 @@ packages:
   - zsh-autosuggestions 
   - zsh-syntax-highlighting
 runcmd:
+  - systemctl enable qemu-guest-agent
+  - systemctl start qemu-guest-agent
   - snap remove lxd
   - snap remove core18
   - snap remove snapd
@@ -47,7 +50,6 @@ runcmd:
   - history -c
   - history -w
   - fstrim -av
-  - systemctl start qemu-guest-agent
 
 network:
   version: 2
