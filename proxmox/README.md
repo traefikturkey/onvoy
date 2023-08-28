@@ -10,6 +10,7 @@ curl -s https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bas
 this section contains configuration files and commands that are used to setup things, it should be considered alpha quality code as its has not been tested as much!
 
 other scripts for proxmox can be found here: [https://tteck.github.io/Proxmox/](https://tteck.github.io/Proxmox/)
+Notes about Debian 12 Bookworm: [https://www.debian.org/releases/bookworm/amd64/release-notes/ch-information.html#non-free-split](https://www.debian.org/releases/bookworm/amd64/release-notes/ch-information.html#non-free-split)
 
 
 #### Use the Source Luke
