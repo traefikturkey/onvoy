@@ -1,6 +1,6 @@
 #!/bin/bash 
 
-# curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/setup_ubuntu_cloudimg_template.sh?$(date +%s)" | /bin/bash -s
+# curl -H 'Cache-Control: no-cache, no-store' -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/setup_ubuntu_cloudimg_template.sh?$(date +%s)" | /bin/bash -s
 
 # qm stop 9000 --skiplock && qm destroy 9000 --destroy-unreferenced-disks --purge
 
