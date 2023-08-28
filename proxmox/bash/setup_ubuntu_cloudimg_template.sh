@@ -23,14 +23,16 @@ if [[ ! -f jammy-server-cloudimg-amd64.img ]]; then
    wget -nc https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
 fi
 
-if [[ ! -f basic_cloudinit.yml ]]; then 
-   echo "downloading cloudinit file..."
-   curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/templates/cloudinit/basic_cloudinit.yml?$(date +%s)" -o basic_cloudinit.yml
-fi
-
-echo "setup cloudinit file..."
+echo "downloading template cloudinit file..."
+curl -s "https://github.com/traefikturkey/onvoy/edit/master/proxmox/bash/templates/cloudinit/template_cloudinit.yml?$(date +%s)" -o /tmp/template_cloudinit.yml
 mkdir -p /var/lib/vz/snippets/
-envsubst < basic_cloudinit.yml > /var/lib/vz/snippets/user-data.yml
+envsubst < /tmp/template_cloudinit.yml > /var/lib/vz/snippets/template-user-data.yml
+rm -f /tmp/template_cloudinit.yml
+
+echo "downloading clone cloudinit file..."
+curl -s "https://github.com/traefikturkey/onvoy/edit/master/proxmox/bash/templates/cloudinit/clone_cloudinit.yml?$(date +%s)" -o /tmp/clone_cloudinit.yml
+envsubst < /tmp/clone_cloudinit.yml > /var/lib/vz/snippets/clone-user-data.yml
+rm -f /tmp/clone_cloudinit.yml
 
 echo "creating new VM..."
 qm create $VM_ID --memory 2048 --cores 4 --machine q35 --bios ovmf --net0 virtio,bridge=vmbr0 
@@ -42,16 +44,14 @@ qm importdisk $VM_ID jammy-server-cloudimg-amd64.img $VM_STORAGE > /dev/null
 qm set $VM_ID --name "${VM_NAME}"
 qm set $VM_ID --scsihw virtio-scsi-pci --scsi0 $VM_STORAGE:vm-$VM_ID-disk-0,cache=writethrough,discard=on,ssd=1
 qm set $VM_ID --scsi1 $VM_STORAGE:cloudinit
+qm set $VM_ID --cicustom "user=local:snippets/template-user-data.yml" # qm cloudinit dump 9000 user
 qm set $VM_ID --efidisk0 $VM_STORAGE:0,pre-enrolled-keys=1,efitype=4m,size=528K
 qm set $VM_ID --boot c --bootdisk scsi0 --ostype l26
 qm set $VM_ID --serial0 socket --vga serial0
 qm set $VM_ID --ipconfig0 ip=dhcp
 qm set $VM_ID --agent enabled=1,type=virtio,fstrim_cloned_disks=1 --localtime 1
 # alternative, but the user-data.yml already has this
-#qm set $VM_ID --sshkey ~/.ssh/id_ed25519.pub
-
-# qm cloudinit dump 9000 user > /var/lib/vz/snippets/user-data.yml; nano /var/lib/vz/snippets/user-data.yml
-qm set $VM_ID --cicustom "user=local:snippets/user-data.yml"
+# qm set $VM_ID --sshkey ~/.ssh/id_ed25519.pub
 
 echo "starting template vm..."
 qm start $VM_ID
@@ -72,13 +72,13 @@ while [[ "$BOOT_COMPLETE" -ne "1" ]]; do
    sleep 5
 done
 
-qm guest exec $VM_ID -- /bin/bash -c 'truncate -s 0 /etc/machine-id && rm /var/lib/dbus/machine-id && ln -s /etc/machine-id  /var/lib/dbus/machine-id'
+qm guest exec $VM_ID -- /bin/bash -c 'truncate -s 0 /etc/machine-id && chmod 600 /etc/machine-id && rm /var/lib/dbus/machine-id && ln -s /etc/machine-id  /var/lib/dbus/machine-id'
 
 echo "shutting down and converting to template VM..."
 qm shutdown $VM_ID
 qm stop $VM_ID
 
-qm resize $VM_ID $VM_STORAGE:vm-$VM_ID-disk-0 +8G
+qm resize $VM_ID scsi0 +8G
 
 qm template $VM_ID
 echo "Operations Completed!"
