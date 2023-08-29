@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/k3s/create_vms.sh?$(date +%s)" | /bin/bash -s
+
 qm clone 9000 201 --name k3s-manager-1 --full false
 qm clone 9000 202 --name k3s-manager-2 --full false
 qm clone 9000 203 --name k3s-manager-3 --full false
