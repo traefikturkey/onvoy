@@ -22,6 +22,7 @@ https://pve.proxmox.com/wiki/Cloud-Init_Support
 https://pve.proxmox.com/wiki/Cloud-Init_FAQ
 https://georgev.design/blog/create-proxmox-cloud-init-templates
 https://austinsnerdythings.com/2021/08/30/how-to-create-a-proxmox-ubuntu-cloud-init-image/
+https://github.com/piku/cloud-init/blob/master/README.md
 
 #### Use the Source Luke
 - - -
