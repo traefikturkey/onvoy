@@ -75,6 +75,7 @@ while [[ "$BOOT_COMPLETE" -ne "1" ]]; do
 done
 echo "Cloud-init completed! Running linux sysprep..."
 qm guest exec $VM_ID -- /bin/bash -c 'echo -n >/etc/machine-id && rm /var/lib/dbus/machine-id && ln -s /etc/machine-id  /var/lib/dbus/machine-id' | jq -r '."exitcode"'
+qm set $VM_ID --cicustom "user=local:snippets/clone-user-data.yml" # qm cloudinit dump 9000 user
 
 echo "shutting down and converting to template VM..."
 #qm shutdown $VM_ID
