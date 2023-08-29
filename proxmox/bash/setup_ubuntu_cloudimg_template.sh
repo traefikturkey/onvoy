@@ -74,11 +74,10 @@ while [[ "$BOOT_COMPLETE" -ne "1" ]]; do
    BOOT_COMPLETE=$(qm guest exec $VM_ID -- /bin/bash -c 'ls /var/lib/cloud/instance/boot-finished | wc -l | tr -d "\n"' | jq -r '."out-data"')
 done
 echo "Cloud-init of template completed, replacing cloud-init user-data.yml..."
-#qm guest exec $VM_ID -- /bin/bash -c 'echo -n >/etc/machine-id && rm /var/lib/dbus/machine-id && ln -s /etc/machine-id  /var/lib/dbus/machine-id' | jq -r '."exitcode"'
 qm set $VM_ID --cicustom "user=local:snippets/clone-user-data.yml" # qm cloudinit dump 9000 user
 
 echo "shutting down and converting to template VM..."
-#qm shutdown $VM_ID
-#qm stop $VM_ID
-#sqm template $VM_ID
+qm shutdown $VM_ID
+qm stop $VM_ID
+qm template $VM_ID
 echo "Operations Completed!"
