@@ -53,7 +53,7 @@ qm set $VM_ID --agent enabled=1,type=virtio,fstrim_cloned_disks=1 --localtime 1
 # alternative, but the user-data.yml already has this
 # qm set $VM_ID --sshkey ~/.ssh/id_ed25519.pub
 
-qm resize $VM_ID scsi0 +8G
+qm resize $VM_ID scsi0 +2G
 
 echo "starting template vm..."
 qm start $VM_ID
