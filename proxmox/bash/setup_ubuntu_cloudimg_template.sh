@@ -74,7 +74,7 @@ while [[ "$BOOT_COMPLETE" -ne "1" ]]; do
    BOOT_COMPLETE=$(qm guest exec $VM_ID -- /bin/bash -c 'ls /var/lib/cloud/instance/boot-finished | wc -l | tr -d "\n"' | jq -r '."out-data"')
 done
 echo "linux sysprep..."
-qm guest exec $VM_ID -- /bin/bash -c 'truncate -s 0 /etc/machine-id && chmod 600 /etc/machine-id && rm /var/lib/dbus/machine-id && ln -s /etc/machine-id  /var/lib/dbus/machine-id'
+qm guest exec $VM_ID -- /bin/bash -c 'echo -n >/etc/machine-id && chmod 600 /etc/machine-id && rm /var/lib/dbus/machine-id && ln -s /etc/machine-id  /var/lib/dbus/machine-id'
 
 echo "shutting down and converting to template VM..."
 #qm shutdown $VM_ID
