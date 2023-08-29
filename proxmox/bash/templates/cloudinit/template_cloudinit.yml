@@ -1,5 +1,5 @@
 #cloud-config
-manage_etc_hosts: false
+manage_etc_hosts: true
 user: $CLOUD_INIT_USERNAME
 password: $CLOUD_INIT_PASSWORD
 chpasswd:
