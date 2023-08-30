@@ -12,7 +12,7 @@ create_vm () {
   qm resize $VM_ID scsi0 +$VM_SIZE
   UUID=$(qm config $VM_ID | grep smbios1: | awk -F'=' '{ print $2 }')
   qm set $VM_ID --smbios1 uuid=$UUID,serial=$(echo -n "ds=nocloud;hostname=$VM_NAME" | base64),base64=1
-  qm start $VM_I
+  qm start $VM_ID
 }
 
 create_vm 201 k3s-manager-1 8192 16G
