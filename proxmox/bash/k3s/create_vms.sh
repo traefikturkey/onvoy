@@ -2,29 +2,21 @@
 
 # curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/k3s/create_vms.sh?$(date +%s)" | /bin/bash -s
 
-qm clone 9000 201 --name k3s-manager-1 --full false
-qm clone 9000 202 --name k3s-manager-2 --full false
-qm clone 9000 203 --name k3s-manager-3 --full false
-qm clone 9000 211 --name k3s-worker-1 --full false
-qm clone 9000 212 --name k3s-worker-2 --full false
+create_vm () {
+  local VM_ID=$1
+  local VM_NAME=$2
+  local VM_MEM=$3
+  local VM_SIZE=$4
+  qm clone 9000 $VM_ID --name $VM_NAME --full false
+  qm set $VM_ID --memory $VM_MEM
+  qm resize $VM_ID scsi0 +$VM_SIZE
+  UUID=$(qm config $VM_ID | grep smbios1: | awk -F'=' '{ print $2 }')
+  qm set $VM_ID --smbios1 uuid=$UUID,serial=$(echo -n "ds=nocloud;hostname=$VM_NAME" | base64),base64=1
+  qm start $VM_I
+}
 
-qm set 201 --memory 8192
-qm resize 201 scsi0 +16G
-
-qm set 202 --memory 8192
-qm resize 202 scsi0 +16G
-
-qm set 203 --memory 8192
-qm resize 203 scsi0 +16G
-
-qm set 211 --memory 16384
-qm resize 211 scsi0 +64G
-
-qm set 212 --memory 16384
-qm resize 212 scsi0 +64G
-
-qm start 201
-qm start 202
-qm start 203
-qm start 211
-qm start 212
+create_vm 201 k3s-manager-1 8192 16G
+create_vm 202 k3s-manager-2 8192 16G
+create_vm 203 k3s-manager-3 8192 16G
+create_vm 211 k3s-worker-1 16384 64G
+create_vm 212 k3s-worker-2 16384 64G
