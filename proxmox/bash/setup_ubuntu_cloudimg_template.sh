@@ -78,7 +78,7 @@ qm guest exec $VM_ID -- /bin/bash -c 'cloud-init clean'
 qm set $VM_ID --cicustom "user=local:snippets/clone-user-data.yml" # qm cloudinit dump 9000 user
 
 echo "shutting down and converting to template VM..."
-qm shutdown $VM_ID
-qm stop $VM_ID
-qm template $VM_ID
+#qm shutdown $VM_ID
+#qm stop $VM_ID
+#qm template $VM_ID
 echo "Operations Completed!"
