@@ -1,53 +1,46 @@
 #cloud-config
 manage_etc_hosts: true
-user: $CLOUD_INIT_USERNAME
-password: $CLOUD_INIT_PASSWORD
+# user: $CLOUD_INIT_USERNAME
+# password: $CLOUD_INIT_PASSWORD
 chpasswd:
   expire: False
 users:
   - name: $CLOUD_INIT_USERNAME
+    plain_text_passwd: $CLOUD_INIT_PASSWORD
     sudo: ALL=(ALL) NOPASSWD:ALL
     ssh_authorized_keys:
       - $CLOUD_INIT_PUBLIC_KEY
-package_update: true
-package_upgrade: true
-packages:
-  - bmon 
-  - bwm-ng 
+packages: 
   - curl
   - cloud-utils
   - cloud-guest-utils
   - git
   - htop 
-  - iftop 
-  - iotop 
-  - libpam-systemd 
-  - locate 
+  - libpam-systemd
   - make
-  - nano 
-  - net-tools 
-  - ntpsec 
-  - qemu-guest-agent 
-  - rsync 
-  - strace 
-  - sysstat 
-  - sudo 
-  - tcpdump 
-  - tmux 
-  - zsh 
-  - zsh-autosuggestions 
+  - nano
+  - net-tools
+  - ntpsec
+  - qemu-guest-agent
+  - rsync
+  - strace
+  - sysstat
+  - sudo
+  - zsh
+  - zsh-autosuggestions
   - zsh-syntax-highlighting
 runcmd:
   - systemctl start qemu-guest-agent
-  - snap remove $(snap list | awk '!/^Name|^core/ {print $1}')
+  - snap remove $(snap list | grep -v snapd | awk '!/^Name|^core/ {print $1}')
   - snap remove snapd
   - apt purge snapd -y
   - apt autoremove -y
   - apt autoclean -y
+  - systemctl daemon-reload
   - sed -i 's/[#]*PermitRootLogin yes/PermitRootLogin prohibit-password/g' /etc/ssh/sshd_config
   - sed -i 's/[#]*PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
   - sed -i 's/#HostKey \/etc\/ssh\/ssh_host_ed25519_key/HostKey \/etc\/ssh\/ssh_host_ed25519_key/g' /etc/ssh/sshd_config
-  - echo -n >/etc/machine-id 
+  - echo -n > /etc/machine-id 
   - rm /var/lib/dbus/machine-id
   - ln -s /etc/machine-id  /var/lib/dbus/machine-id
   - fstrim -av
