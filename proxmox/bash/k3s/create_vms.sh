@@ -15,8 +15,8 @@ create_vm () {
   qm start $VM_ID
 }
 
-create_vm 201 k3s-manager-1 8192 16G
-create_vm 202 k3s-manager-2 8192 16G
-create_vm 203 k3s-manager-3 8192 16G
-create_vm 211 k3s-worker-1 16384 64G
-create_vm 212 k3s-worker-2 16384 64G
+create_vm 201 k3s-manager-1 8192 12G
+create_vm 202 k3s-manager-2 8192 12G
+create_vm 203 k3s-manager-3 8192 12G
+create_vm 211 k3s-worker-1 16384 60G
+create_vm 212 k3s-worker-2 16384 60G
