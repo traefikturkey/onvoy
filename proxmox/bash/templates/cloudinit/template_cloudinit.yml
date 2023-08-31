@@ -2,8 +2,18 @@
 manage_etc_hosts: true
 # user: $CLOUD_INIT_USERNAME
 # password: $CLOUD_INIT_PASSWORD
+ssh_pwauth: false
+ssh_deletekeys: true
+ssh_genkeytypes: [rsa, ed25519]
+disable_root: true
+disable_root_opts: no-port-forwarding,no-agent-forwarding,no-X11-forwarding
+allow_public_ssh_keys: true
+ssh_quiet_keygen: true
+ssh_publish_hostkeys:
+  enabled: true
+  blacklist: [dsa]
 chpasswd:
-  expire: False
+  expire: false
 users:
   - name: $CLOUD_INIT_USERNAME
     plain_text_passwd: $CLOUD_INIT_PASSWORD
@@ -38,20 +48,17 @@ runcmd:
   - apt purge snapd -y
   - apt autoremove -y
   - apt autoclean -y
+  - apt update
+  - apt full-upgrade -y
   - systemctl daemon-reload
-  - sed -i 's/[#]*PermitRootLogin yes/PermitRootLogin prohibit-password/g' /etc/ssh/sshd_config
-  - sed -i 's/[#]*PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
-  - sed -i 's/#HostKey \/etc\/ssh\/ssh_host_ed25519_key/HostKey \/etc\/ssh\/ssh_host_ed25519_key/g' /etc/ssh/sshd_config
   - echo -n > /etc/machine-id 
   - rm /var/lib/dbus/machine-id
   - ln -s /etc/machine-id  /var/lib/dbus/machine-id
   - fstrim -av
   
-
 network:
   version: 2
   ethernets:
     eth0:
       dhcp4: true
       dhcp-identifier: mac
-
