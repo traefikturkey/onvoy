@@ -8,6 +8,7 @@ users:
   - name: $CLOUD_INIT_USERNAME
     plain_text_passwd: $CLOUD_INIT_PASSWORD
     sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
     ssh_authorized_keys:
       - $CLOUD_INIT_PUBLIC_KEY
 packages: 
