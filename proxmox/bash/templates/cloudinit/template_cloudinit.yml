@@ -7,6 +7,7 @@ chpasswd:
 users:
   - name: $CLOUD_INIT_USERNAME
     plain_text_passwd: $CLOUD_INIT_PASSWORD
+    groups: [adm, sudo]
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
     ssh_authorized_keys:
