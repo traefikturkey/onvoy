@@ -22,7 +22,6 @@ packages:
   - iftop 
   - iotop 
   - libpam-systemd 
-  - locales-all 
   - locate 
   - make
   - nano 
@@ -51,7 +50,6 @@ runcmd:
   - echo -n >/etc/machine-id 
   - rm /var/lib/dbus/machine-id
   - ln -s /etc/machine-id  /var/lib/dbus/machine-id
-  - cloud-init clean
   - fstrim -av
   
 
