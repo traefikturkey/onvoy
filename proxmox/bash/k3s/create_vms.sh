@@ -10,8 +10,11 @@ create_vm () {
   qm clone 9000 $VM_ID --name $VM_NAME --full false
   qm set $VM_ID --memory $VM_MEM
   qm resize $VM_ID scsi0 +$VM_SIZE
+
+  # hack to set the hostname of the vm
   UUID=$(qm config $VM_ID | grep smbios1: | awk -F'=' '{ print $2 }')
   qm set $VM_ID --smbios1 uuid=$UUID,serial=$(echo -n "ds=nocloud;hostname=$VM_NAME" | base64),base64=1
+  
   qm start $VM_ID
 }
 
