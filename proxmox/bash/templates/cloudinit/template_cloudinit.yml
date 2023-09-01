@@ -1,7 +1,7 @@
 #cloud-config
 manage_etc_hosts: true
-# user: $CLOUD_INIT_USERNAME
-# password: $CLOUD_INIT_PASSWORD
+user: $CLOUD_INIT_USERNAME
+password: $CLOUD_INIT_PASSWORD
 # ssh_pwauth: false
 # ssh_deletekeys: true
 # ssh_genkeytypes: [rsa, ed25519]
@@ -16,10 +16,10 @@ chpasswd:
   expire: false
 users:
   - name: $CLOUD_INIT_USERNAME
-    plain_text_passwd: $CLOUD_INIT_PASSWORD
-    groups: [adm, sudo]
+    # plain_text_passwd: $CLOUD_INIT_PASSWORD
+    # groups: [adm, sudo]
+    # shell: /bin/bash
     sudo: ALL=(ALL) NOPASSWD:ALL
-    shell: /bin/bash
     ssh_authorized_keys:
       - $CLOUD_INIT_PUBLIC_KEY
 packages: 
@@ -48,8 +48,6 @@ runcmd:
   - apt purge snapd -y
   - apt autoremove -y
   - apt autoclean -y
-  # - apt update
-  # - apt full-upgrade -y
   - systemctl daemon-reload
   - echo -n > /etc/machine-id 
   - rm /var/lib/dbus/machine-id
