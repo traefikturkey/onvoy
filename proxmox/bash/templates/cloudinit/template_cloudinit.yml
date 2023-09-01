@@ -2,16 +2,16 @@
 manage_etc_hosts: true
 # user: $CLOUD_INIT_USERNAME
 # password: $CLOUD_INIT_PASSWORD
-ssh_pwauth: false
-ssh_deletekeys: true
-ssh_genkeytypes: [rsa, ed25519]
-disable_root: true
-disable_root_opts: no-port-forwarding,no-agent-forwarding,no-X11-forwarding
-allow_public_ssh_keys: true
-ssh_quiet_keygen: true
-ssh_publish_hostkeys:
-  enabled: true
-  blacklist: [dsa]
+# ssh_pwauth: false
+# ssh_deletekeys: true
+# ssh_genkeytypes: [rsa, ed25519]
+# disable_root: true
+# disable_root_opts: no-port-forwarding,no-agent-forwarding,no-X11-forwarding
+# allow_public_ssh_keys: true
+# ssh_quiet_keygen: true
+# ssh_publish_hostkeys:
+#   enabled: true
+#   blacklist: [dsa]
 chpasswd:
   expire: false
 users:
@@ -48,8 +48,8 @@ runcmd:
   - apt purge snapd -y
   - apt autoremove -y
   - apt autoclean -y
-  - apt update
-  - apt full-upgrade -y
+  # - apt update
+  # - apt full-upgrade -y
   - systemctl daemon-reload
   - echo -n > /etc/machine-id 
   - rm /var/lib/dbus/machine-id
