@@ -1,8 +1,5 @@
-##############################################################
-# zfs samba file sharing
-# https://forum.level1techs.com/t/how-to-create-a-nas-using-zfs-and-proxmox-with-pictures/117375
-
-# On the root proxmox server:
+#!/bin/bash
+# On the proxmox server:
 
 apt-get update
 apt-get install samba
@@ -14,11 +11,14 @@ smbpasswd
 # Lets create a new user and give them samba permissions.
 
 # To create a new Unix user:
-useradd -m mike
-passwd mike
+useradd -m $USERNAME
+passwd $USERNAME
 
 # This adds the new user to Samba.
-smbpasswd -a mike
+smbpasswd -a $USERNAME
+
+cp /etc/samba/smb.conf /etc/samba/smb.conf.bak
+curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/samba/smb.conf" > /etc/samba/smb.conf
 
 nano /etc/samba/smb.conf
 
