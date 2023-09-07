@@ -1,3 +1,6 @@
+### Links
+https://linuxhint.com/journalctl-tail-and-cheatsheet/
+
 ### Systemctl commands
 List failed services
 ```
