@@ -4,7 +4,7 @@
 
 # qm stop 9000 --skiplock && qm destroy 9000 --destroy-unreferenced-disks --purge
 
-if [[ ! -f ~/.cloudimage.env ]]; then
+if [[ ! -f .cloudimage.env ]]; then
    echo 'CLOUD_INIT_USERNAME=${CLOUD_INIT_USERNAME:-anvil}' > ~/.cloudimage.env
    echo 'CLOUD_INIT_PASSWORD=${CLOUD_INIT_PASSWORD:-super_password}' >> ~/.cloudimage.env
    echo 'CLOUD_INIT_PUBLIC_KEY=$(cat ~/.ssh/id_ed25519.pub)' >> ~/.cloudimage.env
@@ -16,23 +16,54 @@ if [[ ! -f ~/.cloudimage.env ]]; then
    exit 1
 fi
 
-eval export $(cat ~/.cloudimage.env)
+eval export $(cat .cloudimage.env)
+
+if [ -z "$CLOUD_INIT_USERNAME" ] || [ -z "$CLOUD_INIT_PASSWORD" ] || [ -z "$CLOUD_INIT_PUBLIC_KEY" ]; then
+  echo 'one or more required variables are undefined, please check your .env file! Exiting!'        
+  exit 1
+fi
+
+echo "preparing to create $VM_NAME:$VM_ID with user $CLOUD_INIT_USERNAME stored in $VM_STORAGE"
+
+export TEMPLATE_EXISTS=$(qm list | grep -v grep | grep -ci $VM_ID)
+if [[ $TEMPLATE_EXISTS > 0 ]]; then
+   echo "VM $VM_ID already exists, will delete in 5 seconds... CTRL-C to stop now!"
+   secs=6
+   while [ $secs -gt 0 ]; do
+      echo -ne "\t$secs seconds remaining\033[0K\r"
+      sleep 1
+      : $((secs--))
+   done
+   echo ""
+   qm stop $VM_ID --skiplock && qm destroy $VM_ID --destroy-unreferenced-disks --purge
+fi
+
 
 if [[ ! -f /tmp/jammy-server-cloudimg-amd64.img ]]; then 
    echo "downloading cloudimg file..."
    curl -s https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img > /tmp/jammy-server-cloudimg-amd64.img
 fi
 
-echo "downloading template cloudinit file..."
-curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/templates/cloudinit/template_cloudinit.yml?$(date +%s)" > /tmp/template_cloudinit.yml
 mkdir -p /var/lib/vz/snippets/
-envsubst < /tmp/template_cloudinit.yml > /var/lib/vz/snippets/template-user-data.yml
-#rm -f /tmp/template_cloudinit.yml
+if [[ -f ./templates/cloudinit/template_cloudinit.yml ]]; then 
+   echo "loading template cloudinit file..."
+   envsubst < ./templates/cloudinit/template_cloudinit.yml > /var/lib/vz/snippets/template-user-data.yml
+else
+   echo "downloading template cloudinit file..."
+   curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/templates/cloudinit/template_cloudinit.yml?$(date +%s)" > /tmp/template_cloudinit.yml
+   envsubst < /tmp/template_cloudinit.yml > /var/lib/vz/snippets/template-user-data.yml
+   rm -f /tmp/template_cloudinit.yml
+fi
 
-echo "downloading clone cloudinit file..."
-curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/templates/cloudinit/clone_cloudinit.yml?$(date +%s)" > /tmp/clone_cloudinit.yml
-envsubst < /tmp/clone_cloudinit.yml > /var/lib/vz/snippets/clone-user-data.yml
-#rm -f /tmp/clone_cloudinit.yml
+if [[ -f ./templates/cloudinit/clone_cloudinit.yml ]]; then 
+   echo "loading clone cloudinit file..."
+   envsubst < ./templates/cloudinit/clone_cloudinit.yml > /var/lib/vz/snippets/clone-user-data.yml
+else
+   echo "downloading clone cloudinit file..."
+   curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/templates/cloudinit/clone_cloudinit.yml?$(date +%s)" > /tmp/clone_cloudinit.yml
+   envsubst < /tmp/clone_cloudinit.yml > /var/lib/vz/snippets/clone-user-data.yml
+   rm -f /tmp/clone_cloudinit.yml
+fi
 
 echo "creating new VM..."
 qm create $VM_ID --memory 2048 --cores 4 --machine q35 --bios ovmf --net0 virtio,bridge=vmbr0 
@@ -41,6 +72,7 @@ echo "importing cloudimg $VM_STORAGE storage..."
 qm importdisk $VM_ID /tmp/jammy-server-cloudimg-amd64.img $VM_STORAGE > /dev/null
 
 # finally attach the new disk to the VM as scsi drive
+echo "setting vm options..."
 qm set $VM_ID --name "${VM_NAME}"
 qm set $VM_ID --scsihw virtio-scsi-pci --scsi0 $VM_STORAGE:vm-$VM_ID-disk-0,cache=writethrough,discard=on,ssd=1
 qm set $VM_ID --scsi1 $VM_STORAGE:cloudinit
@@ -73,12 +105,15 @@ while [[ "$BOOT_COMPLETE" -ne "1" ]]; do
    sleep 5
    BOOT_COMPLETE=$(qm guest exec $VM_ID -- /bin/bash -c 'ls /var/lib/cloud/instance/boot-finished | wc -l | tr -d "\n"' | jq -r '."out-data"')
 done
-echo "Cloud-init of template completed, replacing cloud-init user-data.yml..."
-#qm guest exec $VM_ID -- /bin/bash -c 'cloud-init clean'
+echo "Cloud-init of template completed, saving log files and cleaning up..."
+qm guest exec $VM_ID -- /bin/bash -c 'cloud-init collect-logs'
+qm guest exec $VM_ID -- /bin/bash -c 'cloud-init clean'
+
+echo "setting cloud-init to use user=local:snippets/clone-user-data.yml..." 
 qm set $VM_ID --cicustom "user=local:snippets/clone-user-data.yml" # qm cloudinit dump 9000 user
 
 echo "shutting down and converting to template VM..."
-#qm shutdown $VM_ID
-#qm stop $VM_ID
-#qm template $VM_ID
+qm shutdown $VM_ID
+qm stop $VM_ID
+qm template $VM_ID
 echo "Operations Completed!"
