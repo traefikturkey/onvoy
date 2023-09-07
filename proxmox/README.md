@@ -27,3 +27,22 @@ https://github.com/piku/cloud-init/blob/master/README.md
 #### Use the Source Luke
 - - -
 Some of the code and notes here originally came from [iLude's Gist](https://gist.github.com/ilude/32aec45964bc1207810f7e6e49544064) but is now being fully maintained here!
+
+### Odds and Ends
+https://forum.proxmox.com/threads/mount-host-directory-into-lxc-container.66555/
+```
+pct set 103 -mp0 /host/dir,mp=/container/mount/point
+```
+
+#### nfs notes
+```
+sudo apt-get install -y nfs-common nfs-kernel-server
+sudo echo "/tank/share       192.168.16.0/24(rw,fsid=0,insecure,no_subtree_check,async)" > /etc/export
+systemctl start nfs-kernel-server.service
+```
+
+#### unattended upgrades
+https://wiki.debian.org/UnattendedUpgrades
+
+#### setup gmail email sending 
+https://geekistheway.com/2021/03/07/configuring-e-mail-alerts-on-your-proxmox/
