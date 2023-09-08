@@ -50,7 +50,7 @@ pct set 103 -mp0 /host/dir,mp=/container/mount/point
 #### nfs notes
 ```
 apt-get install -y nfs-common nfs-kernel-server
-echo "/tank/share       192.168.16.0/24(rw,fsid=0,insecure,no_subtree_check,async)" > /etc/export
+echo "/tank/share       $(ip -o -f inet addr show | awk '/scope global/ {print $4}')(rw,fsid=0,insecure,no_subtree_check,async)" > /etc/export
 systemctl start nfs-kernel-server.service
 ```
 
