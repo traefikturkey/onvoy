@@ -69,12 +69,13 @@ echo "creating new VM..."
 qm create $VM_ID --memory 2048 --cores 4 --machine q35 --bios ovmf --net0 virtio,bridge=vmbr0 
 
 echo "importing cloudimg $VM_STORAGE storage..."
-qm importdisk $VM_ID /tmp/jammy-server-cloudimg-amd64.img $VM_STORAGE > /dev/null
+qm importdisk $VM_ID /tmp/jammy-server-cloudimg-amd64.img $VM_STORAGE --format qcow2 | grep -v 'transferred'
 
 # finally attach the new disk to the VM as scsi drive
 echo "setting vm options..."
 qm set $VM_ID --name "${VM_NAME}"
-qm set $VM_ID --scsihw virtio-scsi-pci --scsi0 $VM_STORAGE:vm-$VM_ID-disk-0,cache=writethrough,discard=on,ssd=1
+qm set $VM_ID --scsihw virtio-scsi-pci 
+qm set $VM_ID --scsi0 $(pvesm list $VM_STORAGE | grep "vm-$VM_ID-disk-0" | awk '{print $1}')
 qm set $VM_ID --scsi1 $VM_STORAGE:cloudinit
 qm set $VM_ID --cicustom "user=local:snippets/template-user-data.yml" # qm cloudinit dump 9000 user
 qm set $VM_ID --efidisk0 $VM_STORAGE:0,pre-enrolled-keys=1,efitype=4m,size=528K

@@ -62,6 +62,10 @@ runcmd:
   - rm /etc/update-motd.d/88-esm-announce 
   - rm /var/lib/ubuntu-advantage/messages/motd-esm-announce
   - systemctl daemon-reload
+  - sed -Ezi.orig -e 's/(def _output_esm_service_status.outstream, have_esm_service, service_type.:\n)/\1    return\n/' -e 's/(def _output_esm_package_alert.*?\n.*?\n.:\n)/\1    return\n/' /usr/lib/update-notifier/apt_check.py
+  - /usr/lib/update-notifier/update-motd-updates-available --force
+  - pro config set apt_news=false
+  - touch ~/.sudo_as_admin_successful
   - echo -n > /etc/machine-id 
   - rm /var/lib/dbus/machine-id
   - ln -s /etc/machine-id  /var/lib/dbus/machine-id
