@@ -41,17 +41,14 @@ https://wiki.debian.org/UnattendedUpgrades
 #### setup gmail email sending 
 https://geekistheway.com/2021/03/07/configuring-e-mail-alerts-on-your-proxmox/
 
-### Odds and Ends
+#### mount host directory into lxc container
 https://forum.proxmox.com/threads/mount-host-directory-into-lxc-container.66555/
 ```
 pct set 103 -mp0 /host/dir,mp=/container/mount/point
 ```
 
-#### nfs notes
-```
-apt-get install -y nfs-common nfs-kernel-server
-echo "/tank/share       $(ip -o -f inet addr show | awk '/scope global/ {print $4}')(rw,fsid=0,insecure,no_subtree_check,async)" > /etc/export
-systemctl start nfs-kernel-server.service
-```
-
-
+#### Dell watchdog / IDrac Links
+https://forum.proxmox.com/threads/testing-the-watchdog.86689/
+https://pve.proxmox.com/wiki/High_Availability_Cluster_4.x#Dell_IDrac_.28module_.22ipmi_watchdog.22.29
+https://unix.stackexchange.com/questions/249654/message-at-shutdown-watchdog-did-not-stop
+https://www.kernel.org/doc/Documentation/IPMI.txt
