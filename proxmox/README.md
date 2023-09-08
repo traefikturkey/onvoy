@@ -17,6 +17,7 @@ https://bobcares.com/blog/proxmox-cant-stop-vm/
 
 Cloudinit Notes:
 
+https://cloudinit.readthedocs.io/en/latest/index.html
 https://gist.github.com/KrustyHack/fa39e509b5736703fb4a3d664157323f
 https://pve.proxmox.com/wiki/Cloud-Init_Support
 https://pve.proxmox.com/wiki/Cloud-Init_FAQ
