@@ -27,6 +27,19 @@ https://github.com/piku/cloud-init/blob/master/README.md
 #### Ceph Links
 https://github.com/fulgerul/ceph_proxmox_scripts
 
+#### Template Prep Links
+https://www.reddit.com/r/Proxmox/comments/pm82tj/cleaning_os_for_vm_template/
+https://www.reddit.com/r/Proxmox/comments/plct2v/are_there_any_current_guides_on_templatingcloning/
+https://gist.github.com/nublaii/f2f3ee92a392a8abaca055d28c821e21
+https://jaletzki.de/posts/centos-7-proxmox-template/
+https://pve.proxmox.com/pve-docs/chapter-qm.html#qm_templates
+
+#### unattended upgrades
+https://wiki.debian.org/UnattendedUpgrades
+
+#### setup gmail email sending 
+https://geekistheway.com/2021/03/07/configuring-e-mail-alerts-on-your-proxmox/
+
 ### Odds and Ends
 https://forum.proxmox.com/threads/mount-host-directory-into-lxc-container.66555/
 ```
@@ -40,8 +53,4 @@ sudo echo "/tank/share       192.168.16.0/24(rw,fsid=0,insecure,no_subtree_check
 systemctl start nfs-kernel-server.service
 ```
 
-#### unattended upgrades
-https://wiki.debian.org/UnattendedUpgrades
 
-#### setup gmail email sending 
-https://geekistheway.com/2021/03/07/configuring-e-mail-alerts-on-your-proxmox/
