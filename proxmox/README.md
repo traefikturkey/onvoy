@@ -24,9 +24,8 @@ https://georgev.design/blog/create-proxmox-cloud-init-templates
 https://austinsnerdythings.com/2021/08/30/how-to-create-a-proxmox-ubuntu-cloud-init-image/
 https://github.com/piku/cloud-init/blob/master/README.md
 
-#### Use the Source Luke
-- - -
-Some of the code and notes here originally came from [iLude's Gist](https://gist.github.com/ilude/32aec45964bc1207810f7e6e49544064) but is now being fully maintained here!
+#### Ceph Links
+https://github.com/fulgerul/ceph_proxmox_scripts
 
 ### Odds and Ends
 https://forum.proxmox.com/threads/mount-host-directory-into-lxc-container.66555/
