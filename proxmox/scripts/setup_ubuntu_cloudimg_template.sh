@@ -12,14 +12,14 @@ if [[ ! -f .cloudimage.env ]]; then
    echo 'VM_STORAGE=${VM_STORAGE:-local-lvm}' >> .cloudimage.env
    echo 'VM_NAME=${VM_NAME:-ubuntu-server-22.04-template}' >> .cloudimage.env
 
-   echo "please edit the .cloudimage. file and then rerun the same command to create the template VM"
+   echo "please edit the .cloudimage.env file and then rerun the same command to create the template VM"
    exit 1
 fi
 
 eval export $(cat .cloudimage.env)
 
 if [ -z "$CLOUD_INIT_USERNAME" ] || [ -z "$CLOUD_INIT_PASSWORD" ] || [ -z "$CLOUD_INIT_PUBLIC_KEY" ]; then
-  echo 'one or more required variables are undefined, please check your .env file! Exiting!'        
+  echo 'one or more required variables are undefined, please check your .cloudimage.env file! Exiting!'        
   exit 1
 fi
 
