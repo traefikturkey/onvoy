@@ -81,6 +81,8 @@ qm set $VM_ID --cicustom "user=local:snippets/template-user-data.yml" # qm cloud
 qm set $VM_ID --efidisk0 $VM_STORAGE:0,pre-enrolled-keys=1,efitype=4m,size=528K
 qm set $VM_ID --boot c --bootdisk scsi0 --ostype l26
 qm set $VM_ID --serial0 socket --vga serial0
+#qm set $VM_ID -args "-chardev file,id=char0,mux=on,path=/tmp/serial.$VM_ID.log,signal=off -serial chardev:char0"
+#qm set $VM_ID --serial1 socket --vga serial1
 qm set $VM_ID --ipconfig0 ip=dhcp
 qm set $VM_ID --agent enabled=1,type=virtio,fstrim_cloned_disks=1 --localtime 1
 # alternative, but the user-data.yml already has this
@@ -90,6 +92,7 @@ qm resize $VM_ID scsi0 +2G
 
 echo "starting template vm..."
 qm start $VM_ID
+#tail -f /tmp/serial.$VM_ID.log
 
 echo "waiting for template vm boot..."
 secs=75
