@@ -18,11 +18,17 @@ https://bobcares.com/blog/proxmox-cant-stop-vm/
 Cloudinit Notes:
 
 https://cloudinit.readthedocs.io/en/latest/index.html
+
 https://gist.github.com/KrustyHack/fa39e509b5736703fb4a3d664157323f
+
 https://pve.proxmox.com/wiki/Cloud-Init_Support
+
 https://pve.proxmox.com/wiki/Cloud-Init_FAQ
+
 https://georgev.design/blog/create-proxmox-cloud-init-templates
+
 https://austinsnerdythings.com/2021/08/30/how-to-create-a-proxmox-ubuntu-cloud-init-image/
+
 https://github.com/piku/cloud-init/blob/master/README.md
 
 #### Ceph Links
@@ -30,9 +36,13 @@ https://github.com/fulgerul/ceph_proxmox_scripts
 
 #### Template Prep Links
 https://www.reddit.com/r/Proxmox/comments/pm82tj/cleaning_os_for_vm_template/
+
 https://www.reddit.com/r/Proxmox/comments/plct2v/are_there_any_current_guides_on_templatingcloning/
+
 https://gist.github.com/nublaii/f2f3ee92a392a8abaca055d28c821e21
+
 https://jaletzki.de/posts/centos-7-proxmox-template/
+
 https://pve.proxmox.com/pve-docs/chapter-qm.html#qm_templates
 
 #### unattended upgrades
