@@ -11,6 +11,7 @@ if [[ ! -f .cloudimage.env ]]; then
    echo 'VM_ID=${VM_ID:-9000}' >> .cloudimage.env
    echo 'VM_STORAGE=${VM_STORAGE:-local-lvm}' >> .cloudimage.env
    echo 'VM_NAME=${VM_NAME:-ubuntu-server-22.04-template}' >> .cloudimage.env
+   echo 'VM_TIMEZONE=$(cat /etc/timezone)' >> .cloudimage.env
 
    echo "please edit the .cloudimage.env file and then rerun the same command to create the template VM"
    exit 1
@@ -77,22 +78,27 @@ qm set $VM_ID --name "${VM_NAME}"
 qm set $VM_ID --scsihw virtio-scsi-pci 
 qm set $VM_ID --scsi0 $(pvesm list $VM_STORAGE | grep "vm-$VM_ID-disk-0" | awk '{print $1}')
 qm set $VM_ID --scsi1 $VM_STORAGE:cloudinit
-qm set $VM_ID --cicustom "user=local:snippets/template-user-data.yml" # qm cloudinit dump 9000 user
 qm set $VM_ID --efidisk0 $VM_STORAGE:0,pre-enrolled-keys=1,efitype=4m,size=528K
-qm set $VM_ID --boot c --bootdisk scsi0 --ostype l26
-qm set $VM_ID --serial0 socket --vga serial0
-#qm set $VM_ID -args "-chardev file,id=char0,mux=on,path=/tmp/serial.$VM_ID.log,signal=off -serial chardev:char0"
+qm resize $VM_ID scsi0 +2G
+
 #qm set $VM_ID --serial1 socket --vga serial1
 qm set $VM_ID --ipconfig0 ip=dhcp
 qm set $VM_ID --agent enabled=1,type=virtio,fstrim_cloned_disks=1 --localtime 1
+
+# log console output to /tmp/serial.$VM_ID.log
+# useful for debugging cloud-init issues
+#tail -f /tmp/serial.$VM_ID.log
+#qm terminal $VM_ID --iface serial0
+qm set $VM_ID --serial0 socket --vga serial0
+qm set $VM_ID -args "-chardev file,id=char0,mux=on,path=/tmp/serial.$VM_ID.log,signal=off -serial chardev:char0"
+
 # alternative, but the user-data.yml already has this
 # qm set $VM_ID --sshkey ~/.ssh/id_ed25519.pub
-
-qm resize $VM_ID scsi0 +2G
+qm set $VM_ID --cicustom "user=local:snippets/template-user-data.yml" # qm cloudinit dump 9000 user
+qm set $VM_ID --boot c --bootdisk scsi0 --ostype l26
 
 echo "starting template vm..."
 qm start $VM_ID
-#tail -f /tmp/serial.$VM_ID.log
 
 echo "waiting for template vm boot..."
 secs=75
@@ -116,8 +122,8 @@ qm guest exec $VM_ID -- /bin/bash -c 'cloud-init clean'
 echo "setting cloud-init to use user=local:snippets/clone-user-data.yml..." 
 qm set $VM_ID --cicustom "user=local:snippets/clone-user-data.yml" # qm cloudinit dump 9000 user
 
-echo "shutting down and converting to template VM..."
-qm shutdown $VM_ID
-qm stop $VM_ID
-qm template $VM_ID
-echo "Operations Completed!"
+# echo "shutting down and converting to template VM..."
+# qm shutdown $VM_ID
+# qm stop $VM_ID
+# qm template $VM_ID
+# echo "Operations Completed!"
