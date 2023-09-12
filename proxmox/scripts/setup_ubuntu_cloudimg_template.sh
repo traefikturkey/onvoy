@@ -81,7 +81,7 @@ qm set $VM_ID --scsi1 $VM_STORAGE:cloudinit
 qm set $VM_ID --efidisk0 $VM_STORAGE:0,pre-enrolled-keys=1,efitype=4m,size=528K
 qm resize $VM_ID scsi0 +2G
 
-#qm set $VM_ID --serial1 socket --vga serial1
+qm set $VM_ID --localtime 0
 qm set $VM_ID --ipconfig0 ip=dhcp
 qm set $VM_ID --agent enabled=1,type=virtio,fstrim_cloned_disks=1 --localtime 1
 
@@ -89,6 +89,7 @@ qm set $VM_ID --agent enabled=1,type=virtio,fstrim_cloned_disks=1 --localtime 1
 # useful for debugging cloud-init issues
 #tail -f /tmp/serial.$VM_ID.log
 #qm terminal $VM_ID --iface serial0
+#qm set $VM_ID --serial1 socket --vga serial1
 qm set $VM_ID --serial0 socket --vga serial0
 qm set $VM_ID -args "-chardev file,id=char0,mux=on,path=/tmp/serial.$VM_ID.log,signal=off -serial chardev:char0"
 
@@ -122,8 +123,8 @@ qm guest exec $VM_ID -- /bin/bash -c 'cloud-init clean'
 echo "setting cloud-init to use user=local:snippets/clone-user-data.yml..." 
 qm set $VM_ID --cicustom "user=local:snippets/clone-user-data.yml" # qm cloudinit dump 9000 user
 
-# echo "shutting down and converting to template VM..."
-# qm shutdown $VM_ID
-# qm stop $VM_ID
-# qm template $VM_ID
-# echo "Operations Completed!"
+echo "shutting down and converting to template VM..."
+qm shutdown $VM_ID
+qm stop $VM_ID
+qm template $VM_ID
+echo "Operations Completed!"

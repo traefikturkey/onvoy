@@ -11,28 +11,20 @@ users:
       - $CLOUD_INIT_PUBLIC_KEY
 apt:
   conf: |
-      APT {
-          Get {
-              Assume-Yes 'true';
-              Fix-Broken 'true';
-          }
-      }
-      APT::Install-Suggests "0";
-      APT::Install-Recommends "0";
-      Dpkg::Options {
-        "--force-confdef";
-        "--force-confold";
-      }
-
-#   primary:
-#     - arches: 
-#       - default
-#       - amd64
-#       search_dns: True
-# package_update: true
-# package_upgrade: true
-# package_reboot_if_required: false
-
+    APT {
+        Get {
+            Assume-Yes 'true';
+            Fix-Broken 'true';
+        }
+    }
+    Acquire {
+      Check-Date "false";
+      Check-Valid-Until "false";
+      Max-FutureTime "86400";
+    }
+package_update: true
+package_upgrade: true
+package_reboot_if_required: false
 packages:
   - curl
   - git
@@ -41,6 +33,7 @@ packages:
   - make
   - nano
   - net-tools
+  - qemu-guest-agent
   - rsync
   - strace
   - sysstat
@@ -50,8 +43,7 @@ packages:
   - zsh-autosuggestions
   - zsh-syntax-highlighting
 runcmd:
-  # - apt-get install qemu-guest-agent -y
-  # - systemctl start qemu-guest-agent
+  - systemctl start qemu-guest-agent
   - snap remove $(snap list | grep -v snapd | awk '!/^Name|^core/ {print $1}')
   - snap remove snapd
   - apt-get purge snapd -y
