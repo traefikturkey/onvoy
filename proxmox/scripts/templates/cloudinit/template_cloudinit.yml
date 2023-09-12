@@ -9,17 +9,6 @@ users:
     sudo: ALL=(ALL) NOPASSWD:ALL
     ssh_authorized_keys:
       - $CLOUD_INIT_PUBLIC_KEY
-<<<<<<< HEAD
-# apt:
-#   primary:
-#     - arches: 
-#       - default
-#       - amd64
-#       search_dns: True
-# package_update: true
-# package_upgrade: true
-# package_reboot_if_required: false
-=======
 apt:
   conf: |
     APT {
@@ -36,7 +25,6 @@ apt:
 package_update: true
 package_upgrade: true
 package_reboot_if_required: false
->>>>>>> 591c503
 packages:
   - curl
   - git
@@ -45,10 +33,7 @@ packages:
   - make
   - nano
   - net-tools
-<<<<<<< HEAD
-=======
   - qemu-guest-agent
->>>>>>> 591c503
   - rsync
   - strace
   - sysstat
@@ -58,8 +43,7 @@ packages:
   - zsh-autosuggestions
   - zsh-syntax-highlighting
 runcmd:
-  # - apt-get install qemu-guest-agent -y
-  # - systemctl start qemu-guest-agent
+  - systemctl start qemu-guest-agent
   - snap remove $(snap list | grep -v snapd | awk '!/^Name|^core/ {print $1}')
   - snap remove snapd
   - apt-get purge snapd -y
