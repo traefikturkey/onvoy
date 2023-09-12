@@ -9,6 +9,7 @@ users:
     sudo: ALL=(ALL) NOPASSWD:ALL
     ssh_authorized_keys:
       - $CLOUD_INIT_PUBLIC_KEY
+<<<<<<< HEAD
 # apt:
 #   primary:
 #     - arches: 
@@ -18,6 +19,24 @@ users:
 # package_update: true
 # package_upgrade: true
 # package_reboot_if_required: false
+=======
+apt:
+  conf: |
+    APT {
+        Get {
+            Assume-Yes 'true';
+            Fix-Broken 'true';
+        }
+    }
+    Acquire {
+      Check-Date "false";
+      Check-Valid-Until "false";
+      Max-FutureTime "86400";
+    }
+package_update: true
+package_upgrade: true
+package_reboot_if_required: false
+>>>>>>> 591c503
 packages:
   - curl
   - git
@@ -26,6 +45,10 @@ packages:
   - make
   - nano
   - net-tools
+<<<<<<< HEAD
+=======
+  - qemu-guest-agent
+>>>>>>> 591c503
   - rsync
   - strace
   - sysstat
