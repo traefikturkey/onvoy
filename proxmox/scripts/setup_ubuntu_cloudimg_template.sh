@@ -12,6 +12,7 @@ if [[ ! -f .cloudimage.env ]]; then
    echo 'VM_STORAGE=${VM_STORAGE:-local-lvm}' >> .cloudimage.env
    echo 'VM_NAME=${VM_NAME:-ubuntu-server-22.04-template}' >> .cloudimage.env
    echo 'VM_TIMEZONE=$(cat /etc/timezone)' >> .cloudimage.env
+   echo 'GITHUB_PUBLIC_KEY_USERNAME=' >> .cloudimage.env
 
    echo "please edit the .cloudimage.env file and then rerun the same command to create the template VM"
    exit 1
@@ -118,7 +119,17 @@ while [[ "$BOOT_COMPLETE" -ne "1" ]]; do
    sleep 5
    BOOT_COMPLETE=$(qm guest exec $VM_ID -- /bin/bash -c 'ls /var/lib/cloud/instance/boot-finished | wc -l | tr -d "\n"' | jq -r '."out-data"')
 done
-echo "Cloud-init of template completed, saving log files and cleaning up..."
+echo "Cloud-init of template completed!"
+
+if [ ! -z "$GITHUB_PUBLIC_KEY_USERNAME" ]; then
+   echo "importing ssh public keys from Github user $GITHUB_PUBLIC_KEY_USERNAME..."
+   qm guest exec $VM_ID -- /bin/bash -c "ssh-import-id -o /home/$CLOUD_INIT_USERNAME/.ssh/authorized_keys gh:$GITHUB_PUBLIC_KEY_USERNAME "
+fi
+
+echo "setting user $CLOUD_INIT_USERNAME password..."
+qm guest exec $VM_ID -- /bin/bash -c "echo \"$CLOUD_INIT_USERNAME:$CLOUD_INIT_PASSWORD\" | chpasswd"
+
+echo "saving log files and cleaning up..."
 qm guest exec $VM_ID -- /bin/bash -c 'cloud-init collect-logs'
 qm guest exec $VM_ID -- /bin/bash -c 'cloud-init clean'
 

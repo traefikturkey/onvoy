@@ -1,12 +1,12 @@
 #cloud-config
 manage_etc_hosts: true
-timezone: ${VM_TIMEZONE}
+timezone: $VM_TIMEZONE
 chpasswd:
   expire: false
 users:
   - name: $CLOUD_INIT_USERNAME
-    plain_text_passwd: $CLOUD_INIT_PASSWORD
     sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
     ssh_authorized_keys:
       - $CLOUD_INIT_PUBLIC_KEY
 apt:
@@ -29,6 +29,7 @@ packages:
   - curl
   - git
   - htop 
+  - ssh-import-id
   - libpam-systemd
   - make
   - nano
@@ -49,7 +50,10 @@ runcmd:
   - apt-get purge snapd -y
   - apt-get autoremove -y
   - apt-get autoclean -y
-  - touch ~/.sudo_as_admin_successful
+  - systemctl enable unattended-upgrades.service
+  - systemctl start unattended-upgrades.service
+  - systemctl daemon-reload
+  - touch /home/$CLOUD_INIT_USERNAME/.sudo_as_admin_successful
   - echo -n > /etc/machine-id 
   - rm /var/lib/dbus/machine-id
   - ln -s /etc/machine-id  /var/lib/dbus/machine-id

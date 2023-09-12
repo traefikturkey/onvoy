@@ -1,12 +1,5 @@
 #cloud-config
-apt:
-  primary:
-    - arches: [default]
-      search_dns: True
 package_update: true
 package_upgrade: true
 package_reboot_if_required: true
-runcmd:
-  - systemctl enable unattended-upgrades.service
-  - systemctl start unattended-upgrades.service
-  - systemctl daemon-reload
+
