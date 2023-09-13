@@ -104,15 +104,15 @@ qm set $VM_ID --cicustom "user=local:snippets/template-user-data.yml" # qm cloud
 echo "starting template vm..."
 qm start $VM_ID
 
-echo "waiting for template vm boot..."
-secs=75
-while [ $secs -gt 0 ]; do
-   echo -ne "\t$secs seconds remaining\033[0K\r"
-   sleep 1
-   : $((secs--))
-done
-echo ""
-echo "booting complete, waiting for QEMU guest agent to start..."
+# echo "waiting for template vm boot..."
+# secs=75
+# while [ $secs -gt 0 ]; do
+#    echo -ne "\t$secs seconds remaining\033[0K\r"
+#    sleep 1
+#    : $((secs--))
+# done
+# echo ""
+echo "waiting for QEMU guest agent to start..."
 
 BOOT_COMPLETE="0"
 while [[ "$BOOT_COMPLETE" -ne "1" ]]; do
