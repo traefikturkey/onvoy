@@ -1,6 +1,6 @@
 #!/bin/bash 
 
-# curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/setup_ubuntu_cloudimg_template.sh?$(date +%s)" | /bin/bash -s
+# https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/scripts/setup_ubuntu_cloudimg_template.sh
 
 # qm stop 9000 --skiplock && qm destroy 9000 --destroy-unreferenced-disks --purge
 
