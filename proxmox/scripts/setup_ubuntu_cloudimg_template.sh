@@ -12,6 +12,8 @@ if [[ ! -f .cloudimage.env ]]; then
    echo 'VM_STORAGE=${VM_STORAGE:-local-lvm}' >> .cloudimage.env
    echo 'VM_NAME=${VM_NAME:-ubuntu-server-22.04-template}' >> .cloudimage.env
    echo 'VM_TIMEZONE=$(cat /etc/timezone)' >> .cloudimage.env
+   echo 'VM_SNIPPET_PATH=${VM_SNIPPET_PATH:-/var/lib/vz/snippets}' >> .cloudimage.env
+   echo 'VM_SNIPPET_LOCATION=${VM_SNIPPET_LOCATION:-local}' >> .cloudimage.env
    echo 'GITHUB_PUBLIC_KEY_USERNAME=' >> .cloudimage.env
 
    echo "please edit the .cloudimage.env file and then rerun the same command to create the template VM"
@@ -49,21 +51,21 @@ fi
 mkdir -p /var/lib/vz/snippets/
 if [[ -f ./templates/cloudinit/template_cloudinit.yml ]]; then 
    echo "loading template cloudinit file..."
-   envsubst < ./templates/cloudinit/template_cloudinit.yml > /var/lib/vz/snippets/template-user-data.yml
+   envsubst < ./templates/cloudinit/template_cloudinit.yml > $VM_SNIPPET_PATH/snippets/template-user-data.yml
 else
    echo "downloading template cloudinit file..."
    curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/templates/cloudinit/template_cloudinit.yml?$(date +%s)" > /tmp/template_cloudinit.yml
-   envsubst < /tmp/template_cloudinit.yml > /var/lib/vz/snippets/template-user-data.yml
+   envsubst < /tmp/template_cloudinit.yml > $VM_SNIPPET_PATH/snippets/template-user-data.yml
    rm -f /tmp/template_cloudinit.yml
 fi
 
 if [[ -f ./templates/cloudinit/clone_cloudinit.yml ]]; then 
    echo "loading clone cloudinit file..."
-   envsubst < ./templates/cloudinit/clone_cloudinit.yml > /var/lib/vz/snippets/clone-user-data.yml
+   envsubst < ./templates/cloudinit/clone_cloudinit.yml > $VM_SNIPPET_PATH/snippets/clone-user-data.yml
 else
    echo "downloading clone cloudinit file..."
    curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/templates/cloudinit/clone_cloudinit.yml?$(date +%s)" > /tmp/clone_cloudinit.yml
-   envsubst < /tmp/clone_cloudinit.yml > /var/lib/vz/snippets/clone-user-data.yml
+   envsubst < /tmp/clone_cloudinit.yml > $VM_SNIPPET_PATH/snippets/clone-user-data.yml
    rm -f /tmp/clone_cloudinit.yml
 fi
 
@@ -83,23 +85,21 @@ qm set $VM_ID --efidisk0 $VM_STORAGE:0,pre-enrolled-keys=1,efitype=4m,size=528K
 qm set $VM_ID --boot c --bootdisk scsi0 --ostype l26
 qm resize $VM_ID scsi0 +2G
 
-qm set $VM_ID --serial0 socket --vga serial0
+qm set $VM_ID --serial0 socket #--vga serial0
 qm set $VM_ID --ipconfig0 ip=dhcp
 qm set $VM_ID --agent enabled=1,type=virtio,fstrim_cloned_disks=1 --localtime 1
+
+# alternative, but the user-data.yml already has this
+# qm set $VM_ID --sshkey ~/.ssh/id_ed25519.pub
+qm set $VM_ID --cicustom "user=$VM_SNIPPET_LOCATION:snippets/template-user-data.yml" # qm cloudinit dump 9000 user
 
 # enable the line below to generate
 # log console output to /tmp/serial.$VM_ID.log
 # useful for debugging cloud-init issues
 #qm set $VM_ID -args "-chardev file,id=char0,mux=on,path=/tmp/serial.$VM_ID.log,signal=off -serial chardev:char0"
-
-# Command Notes:
 #tail -f /tmp/serial.$VM_ID.log
 #qm terminal $VM_ID --iface serial0
 #qm set $VM_ID --serial1 socket --vga serial1
-
-# alternative, but the user-data.yml already has this
-# qm set $VM_ID --sshkey ~/.ssh/id_ed25519.pub
-qm set $VM_ID --cicustom "user=local:snippets/template-user-data.yml" # qm cloudinit dump 9000 user
 
 echo "starting template vm..."
 qm start $VM_ID
@@ -133,8 +133,8 @@ echo "saving log files and cleaning up..."
 qm guest exec $VM_ID -- /bin/bash -c 'cloud-init collect-logs'
 qm guest exec $VM_ID -- /bin/bash -c 'cloud-init clean'
 
-echo "setting cloud-init to use user=local:snippets/clone-user-data.yml..." 
-qm set $VM_ID --cicustom "user=local:snippets/clone-user-data.yml" 
+echo "setting cloud-init to use user=$VM_SNIPPET_LOCATION:snippets/clone-user-data.yml..." 
+qm set $VM_ID --cicustom "user=$VM_SNIPPET_LOCATION:snippets/clone-user-data.yml" 
 # qm cloudinit dump 9000 user
 
 echo "shutting down and converting to template VM..."
