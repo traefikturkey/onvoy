@@ -51,11 +51,11 @@ fi
 mkdir -p /var/lib/vz/snippets/
 if [[ -f ./templates/cloudinit/template_cloudinit.yml ]]; then 
    echo "loading template cloudinit file..."
-   envsubst < ./templates/cloudinit/template_cloudinit.yml > $VM_SNIPPET_PATH/snippets/template-user-data.yml
+   envsubst < ./templates/cloudinit/template_cloudinit.yml > $VM_SNIPPET_PATH/template-user-data.yml
 else
    echo "downloading template cloudinit file..."
    curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/templates/cloudinit/template_cloudinit.yml?$(date +%s)" > /tmp/template_cloudinit.yml
-   envsubst < /tmp/template_cloudinit.yml > $VM_SNIPPET_PATH/snippets/template-user-data.yml
+   envsubst < /tmp/template_cloudinit.yml > $VM_SNIPPET_PATH/template-user-data.yml
    rm -f /tmp/template_cloudinit.yml
 fi
 
