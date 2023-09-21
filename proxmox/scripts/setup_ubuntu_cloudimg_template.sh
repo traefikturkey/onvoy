@@ -61,11 +61,11 @@ fi
 
 if [[ -f ./templates/cloudinit/clone_cloudinit.yml ]]; then 
    echo "loading clone cloudinit file..."
-   envsubst < ./templates/cloudinit/clone_cloudinit.yml > $VM_SNIPPET_PATH/snippets/clone-user-data.yml
+   envsubst < ./templates/cloudinit/clone_cloudinit.yml > $VM_SNIPPET_PATH/clone-user-data.yml
 else
    echo "downloading clone cloudinit file..."
    curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/templates/cloudinit/clone_cloudinit.yml?$(date +%s)" > /tmp/clone_cloudinit.yml
-   envsubst < /tmp/clone_cloudinit.yml > $VM_SNIPPET_PATH/snippets/clone-user-data.yml
+   envsubst < /tmp/clone_cloudinit.yml > $VM_SNIPPET_PATH/clone-user-data.yml
    rm -f /tmp/clone_cloudinit.yml
 fi
 
