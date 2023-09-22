@@ -54,7 +54,7 @@ if [[ -f ./templates/cloudinit/template_cloudinit.yml ]]; then
    envsubst < ./templates/cloudinit/template_cloudinit.yml > $VM_SNIPPET_PATH/template-user-data.yml
 else
    echo "downloading template cloudinit file..."
-   curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/templates/cloudinit/template_cloudinit.yml?$(date +%s)" > /tmp/template_cloudinit.yml
+   curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/scripts/templates/cloudinit/template_cloudinit.yml?$(date +%s)" > /tmp/template_cloudinit.yml
    envsubst < /tmp/template_cloudinit.yml > $VM_SNIPPET_PATH/template-user-data.yml
    rm -f /tmp/template_cloudinit.yml
 fi
@@ -64,7 +64,7 @@ if [[ -f ./templates/cloudinit/clone_cloudinit.yml ]]; then
    envsubst < ./templates/cloudinit/clone_cloudinit.yml > $VM_SNIPPET_PATH/clone-user-data.yml
 else
    echo "downloading clone cloudinit file..."
-   curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/bash/templates/cloudinit/clone_cloudinit.yml?$(date +%s)" > /tmp/clone_cloudinit.yml
+   curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/scripts/templates/cloudinit/clone_cloudinit.yml?$(date +%s)" > /tmp/clone_cloudinit.yml
    envsubst < /tmp/clone_cloudinit.yml > $VM_SNIPPET_PATH/clone-user-data.yml
    rm -f /tmp/clone_cloudinit.yml
 fi
