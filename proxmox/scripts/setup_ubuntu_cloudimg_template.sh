@@ -83,6 +83,7 @@ qm set $VM_ID --scsi0 $(pvesm list $VM_STORAGE | grep "vm-$VM_ID-disk-0" | awk '
 qm set $VM_ID --scsi1 $VM_STORAGE:cloudinit
 qm set $VM_ID --efidisk0 $VM_STORAGE:0,pre-enrolled-keys=0,efitype=4m,size=528K
 qm set $VM_ID --boot c --bootdisk scsi0 --ostype l26
+qm set $VM_ID --onboot 1
 qm resize $VM_ID scsi0 +2G
 
 qm set $VM_ID --serial0 socket #--vga serial0
