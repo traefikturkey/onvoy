@@ -20,6 +20,9 @@ if [[ ! -f .cloudimage.env ]]; then
    exit 1
 fi
 
+echo "checking for installed dependencies..."
+apt-get install -y jq
+
 eval export $(cat .cloudimage.env)
 
 if [ -z "$CLOUD_INIT_USERNAME" ] || [ -z "$CLOUD_INIT_PASSWORD" ] || [ -z "$CLOUD_INIT_PUBLIC_KEY" ]; then
