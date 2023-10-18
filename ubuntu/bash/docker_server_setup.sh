@@ -199,7 +199,7 @@ sudo ln -s  $DOCKER_CLI_PLUGIN_PATH/docker-compose /usr/local/bin/docker-compose
 # setup users environment
 ###########################################################
 # load git config with aliases and such that work for me
-sudo curl -L https://raw.githubusercontent.com/traefikturkey/onvoy/master/ubuntu/notes/gitconfig -o /etc/gitconfig
+sudo curl -L https://raw.githubusercontent.com/traefikturkey/onvoy/main/shell/git/gitconfig -o /etc/gitconfig
 
 mkdir $HOME/.ssh
 #curl -L https://gist.githubusercontent.com/ilude/e2342829a97c3c3d3da5f9c73976c4ec/raw/authorized_keys -o $HOME/.ssh/authorized_keys
