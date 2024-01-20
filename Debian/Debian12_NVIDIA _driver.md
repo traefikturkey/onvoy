@@ -5,12 +5,27 @@
 
 `echo "deb http://deb.debian.org/debian/ bookworm main contrib non-free non-free-firmware" >> /etc/apt/sources/list`
 
+### 
+
 ## Install NVIDIA drivers
+`LINUX_HEADERS=$(uname -r)`
+
 `sudo apt update`
 
-`sudo apt install nvidia-driver firmware-misc-nonfree -y`
+`sudo apt -y install nvidia-driver firmware-misc-nonfree linux-headers-$LINUX_HEADERS dkms`
 
 This takes a bit.  Be patient
+
+## verify driver usage
+
+`cat /etc/modprobe.d/nvidia-blacklists-nouveau.conf`
+
+```
+# You need to run "update-initramfs -u" after editing this file.
+
+# see #580894
+blacklist nouveau
+```
 
 ## CUDA
 * THIS ASSUMES YOU ALREAD DID AN `SUDO APT UPDATE` *
