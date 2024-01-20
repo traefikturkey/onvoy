@@ -20,6 +20,8 @@ This takes a bit.  Be patient
 
 `cat /etc/modprobe.d/nvidia-blacklists-nouveau.conf`
 
+Should look lke this:
+
 ```
 # You need to run "update-initramfs -u" after editing this file.
 
