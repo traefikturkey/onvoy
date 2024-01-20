@@ -1,4 +1,9 @@
 # Debian 12 Bookworm
+
+**THIS ASSUMES YOU PREPPED YOUR PROXMOX FOR GPU PASSTHROUGH**
+
+Good instructions are here:  [reddit thread](https://www.reddit.com/r/homelab/comments/b5xpua/the_ultimate_beginners_guide_to_gpu_passthrough/)
+
 # NVIDIA drivers
 ## Repo
 ### Add non-free repo to /etc/apt/sources.list
@@ -30,8 +35,8 @@ blacklist nouveau
 ```
 
 ## CUDA
-* THIS ASSUMES YOU ALREAD DID AN `SUDO APT UPDATE` *
 ### CUDA install
+`sudo apt update`
 
 `sudo apt install nvidia-cuda-toolkit -y`
 
