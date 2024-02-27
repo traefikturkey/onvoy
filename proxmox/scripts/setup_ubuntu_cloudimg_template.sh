@@ -73,7 +73,7 @@ else
 fi
 
 echo "creating new VM..."
-qm create $VM_ID --memory 2048 --cores 4 --machine q35 --bios ovmf --net0 virtio,bridge=vmbr0 
+qm create $VM_ID --memory 2048 --cores 4 --cpu cputype=host --machine q35 --bios ovmf --net0 virtio,bridge=vmbr0 
 
 echo "importing cloudimg $VM_STORAGE storage..."
 qm importdisk $VM_ID /tmp/jammy-server-cloudimg-amd64.img $VM_STORAGE --format qcow2 | grep -v 'transferred'
