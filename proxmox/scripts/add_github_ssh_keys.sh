@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# curl -s  | bash -s <your_github_username>
+# curl -s https://raw.githubusercontent.com/traefikturkey/onvoy/main/proxmox/scripts/add_github_ssh_keys.sh | bash -s <your_github_username>
 
 if [ "$#" -ne 1 ]; then
     echo "Please provide a github username."
