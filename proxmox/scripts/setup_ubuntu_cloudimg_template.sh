@@ -25,7 +25,7 @@ apt-get install -y jq
 
 eval export $(cat .cloudimage.env)
 
-if [ -z "$CLOUD_INIT_USERNAME" ] || [ -z "$CLOUD_INIT_PASSWORD" ] || [ -z "$CLOUD_INIT_PUBLIC_KEY" ]; then
+if [ -z "$CLOUD_INIT_USERNAME" ] || [ -z "$CLOUD_INIT_PASSWORD" ]; then
   echo 'one or more required variables are undefined, please check your .cloudimage.env file! Exiting!'        
   exit 1
 fi
