@@ -25,9 +25,23 @@ apt-get install -y jq
 
 eval export $(cat .cloudimage.env)
 
-if [ -z "$CLOUD_INIT_USERNAME" ] || [ -z "$CLOUD_INIT_PASSWORD" ]; then
-  echo 'one or more required variables are undefined, please check your .cloudimage.env file! Exiting!'        
+if [ -z "$CLOUD_INIT_USERNAME" ]; then
+  echo 'CLOUD_INIT_USERNAME is undefined, please check your .cloudimage.env file! Exiting!'        
   exit 1
+fi
+
+if [ -z "$CLOUD_INIT_PASSWORD" ]; then
+  echo 'CLOUD_INIT_PASSWORD is undefined, please check your .cloudimage.env file! Exiting!'        
+  exit 1
+fi
+
+if [ -z "$CLOUD_INIT_PUBLIC_KEY" ]; then
+  if [ ! -z "$GITHUB_PUBLIC_KEY_USERNAME" ]; then
+    CLOUD_INIT_PUBLIC_KEY=$(wget -qO- https://github.com/$GITHUB_PUBLIC_KEY_USERNAME.keys | head -n1)
+  else
+    echo 'CLOUD_INIT_PUBLIC_KEY and GITHUB_PUBLIC_KEY_USERNAME are undefined, please check your .cloudimage.env file! Exiting!'        
+    exit 1
+  fi
 fi
 
 echo "preparing to create $VM_NAME:$VM_ID with user $CLOUD_INIT_USERNAME stored in $VM_STORAGE"
@@ -44,7 +58,6 @@ if [[ $TEMPLATE_EXISTS > 0 ]]; then
    echo ""
    qm stop $VM_ID --skiplock && qm destroy $VM_ID --destroy-unreferenced-disks --purge
 fi
-
 
 if [[ ! -f /tmp/jammy-server-cloudimg-amd64.img ]]; then 
    echo "downloading cloudimg file..."
@@ -108,14 +121,6 @@ qm set $VM_ID --cicustom "user=$VM_SNIPPET_LOCATION:snippets/template-user-data.
 echo "starting template vm..."
 qm start $VM_ID
 
-# echo "waiting for template vm boot..."
-# secs=75
-# while [ $secs -gt 0 ]; do
-#    echo -ne "\t$secs seconds remaining\033[0K\r"
-#    sleep 1
-#    : $((secs--))
-# done
-# echo ""
 echo "waiting for QEMU guest agent to start..."
 
 BOOT_COMPLETE="0"
