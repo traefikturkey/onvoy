@@ -100,7 +100,7 @@ qm set $VM_ID --boot c --bootdisk scsi0 --ostype l26
 qm set $VM_ID --onboot 1
 qm resize $VM_ID scsi0 +2G
 
-qm set $VM_ID --serial0 socket #--vga serial0
+
 qm set $VM_ID --ipconfig0 ip=dhcp
 qm set $VM_ID --agent enabled=1,type=virtio,fstrim_cloned_disks=1 --localtime 1
 
@@ -111,16 +111,22 @@ qm set $VM_ID --cicustom "user=$VM_SNIPPET_LOCATION:snippets/template-user-data.
 # enable the line below to generate
 # log console output to /tmp/serial.$VM_ID.log
 # useful for debugging cloud-init issues
-qm terminal $VM_ID --iface serial0
-qm set $VM_ID --serial1 socket --vga serial1
+#qm terminal $VM_ID --iface serial0
+#qm set $VM_ID --serial1 socket --vga serial1
+qm set $VM_ID --serial0 socket #--vga serial0
 qm set $VM_ID -args "-chardev file,id=char0,mux=on,path=/tmp/serial.$VM_ID.log,signal=off -serial chardev:char0"
+rm -rf /tmp/serial.$VM_ID.log || true
 
 echo "starting template vm..."
 qm start $VM_ID
 
 echo "waiting for QEMU guest agent to start..."
+echo ""
+echo "================================================================="
 echo "run the following in another terminal to watch the VM's progress:"
 echo "tail -f /tmp/serial.$VM_ID.log"
+echo "================================================================="
+echo ""
 
 BOOT_COMPLETE="0"
 while [[ "$BOOT_COMPLETE" -ne "1" ]]; do
@@ -148,5 +154,7 @@ qm set $VM_ID --cicustom "user=$VM_SNIPPET_LOCATION:snippets/clone-user-data.yml
 echo "shutting down and converting to template VM..."
 qm shutdown $VM_ID
 qm stop $VM_ID
+# remove serial logging to /tmp/serial.$VM_ID.log
+qm set $VM_ID --delete args
 qm template $VM_ID
 echo "Operations Completed!"
