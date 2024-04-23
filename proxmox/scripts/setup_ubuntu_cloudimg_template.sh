@@ -2,8 +2,6 @@
 
 # curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/scripts/setup_ubuntu_cloudimg_template.sh?$(date +%s)" | /bin/bash -s
 
-# qm stop 9000 --skiplock && qm destroy 9000 --destroy-unreferenced-disks --purge
-
 if [[ ! -f .cloudimage.env ]]; then
    echo 'CLOUD_INIT_USERNAME=${CLOUD_INIT_USERNAME:-anvil}' > .cloudimage.env
    echo 'CLOUD_INIT_PASSWORD=${CLOUD_INIT_PASSWORD:-super_password}' >> .cloudimage.env
@@ -96,7 +94,7 @@ echo "setting vm options..."
 qm set $VM_ID --name "${VM_NAME}"
 qm set $VM_ID --scsihw virtio-scsi-pci 
 qm set $VM_ID --scsi0 $(pvesm list $VM_STORAGE | grep "vm-$VM_ID-disk-0" | awk '{print $1}')
-qm set $VM_ID --scsi1 $VM_STORAGE:cloudinit
+qm set $VM_ID --ide2 $VM_STORAGE:cloudinit
 qm set $VM_ID --efidisk0 $VM_STORAGE:0,pre-enrolled-keys=0,efitype=4m,size=528K
 qm set $VM_ID --boot c --bootdisk scsi0 --ostype l26
 qm set $VM_ID --onboot 1
@@ -113,15 +111,16 @@ qm set $VM_ID --cicustom "user=$VM_SNIPPET_LOCATION:snippets/template-user-data.
 # enable the line below to generate
 # log console output to /tmp/serial.$VM_ID.log
 # useful for debugging cloud-init issues
-#qm set $VM_ID -args "-chardev file,id=char0,mux=on,path=/tmp/serial.$VM_ID.log,signal=off -serial chardev:char0"
-#tail -f /tmp/serial.$VM_ID.log
-#qm terminal $VM_ID --iface serial0
-#qm set $VM_ID --serial1 socket --vga serial1
+qm terminal $VM_ID --iface serial0
+qm set $VM_ID --serial1 socket --vga serial1
+qm set $VM_ID -args "-chardev file,id=char0,mux=on,path=/tmp/serial.$VM_ID.log,signal=off -serial chardev:char0"
 
 echo "starting template vm..."
 qm start $VM_ID
 
 echo "waiting for QEMU guest agent to start..."
+echo "run the following in another terminal to watch the VM's progress:"
+echo "tail -f /tmp/serial.$VM_ID.log"
 
 BOOT_COMPLETE="0"
 while [[ "$BOOT_COMPLETE" -ne "1" ]]; do
