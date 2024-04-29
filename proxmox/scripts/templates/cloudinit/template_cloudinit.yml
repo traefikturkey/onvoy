@@ -54,10 +54,9 @@ runcmd:
   - systemctl start unattended-upgrades.service
   - systemctl daemon-reload
   - touch /home/$CLOUD_INIT_USERNAME/.sudo_as_admin_successful
-  - echo -n > /etc/machine-id 
-  - rm /var/lib/dbus/machine-id
-  - ln -s /etc/machine-id  /var/lib/dbus/machine-id
-  - fstrim -av
+  - curl -Ls https://raw.githubusercontent.com/traefikturkey/onvoy/main/proxmox/scripts/templates/cloudinit/sysprep > /usr/local/bin/sysprep
+  - chmod +x /usr/local/bin/sysprep
+  - /usr/local/bin/sysprep
 
 network:
   version: 2
