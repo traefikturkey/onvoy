@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+sudo echo -n > /etc/machine-id 
+sudo rm /var/lib/dbus/machine-id
+sudo ln -s /etc/machine-id  /var/lib/dbus/machine-id
+sudo fstrim -av
