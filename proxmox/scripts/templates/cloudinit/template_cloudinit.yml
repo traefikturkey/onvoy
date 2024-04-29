@@ -43,6 +43,27 @@ packages:
   - zsh
   - zsh-autosuggestions
   - zsh-syntax-highlighting
+  
+bootcmd:
+  - systemctl daemon-reload
+
+write_files:
+  - path: /etc/systemd/system/generate-ssh-keys.service
+    content: |
+      [Unit]
+      Description=Generate SSH host keys if missing
+      ConditionPathExists=!/etc/ssh/ssh_host_rsa_key
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/bin/ssh-keygen -A
+
+  - path: /etc/systemd/system/ssh.service.d/dependency.conf
+    content: |
+      [Unit]
+      Requires=generate-ssh-keys.service
+      After=generate-ssh-keys.service
+
 runcmd:
   - systemctl start qemu-guest-agent
   - snap remove $(snap list | grep -v snapd | awk '!/^Name|^core/ {print $1}')
@@ -52,6 +73,8 @@ runcmd:
   - apt-get autoclean -y
   - systemctl enable unattended-upgrades.service
   - systemctl start unattended-upgrades.service
+  - systemctl enable generate-ssh-keys.service
+  - systemctl start generate-ssh-keys.service
   - systemctl daemon-reload
   - touch /home/$CLOUD_INIT_USERNAME/.sudo_as_admin_successful
   - curl -Ls https://raw.githubusercontent.com/traefikturkey/onvoy/main/proxmox/scripts/templates/cloudinit/sysprep > /usr/local/bin/sysprep
