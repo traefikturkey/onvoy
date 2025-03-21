@@ -77,7 +77,7 @@ sed -i 's/#DefaultTimeoutStopSec=90s/DefaultTimeoutStopSec=10s/g' /etc/systemd/s
 
 # install cloud-init and guestfs tools and
 # force post-invoke scripts to run
-apt install -y bash-completion dnsutils git htop iftop iotop jq libguestfs-tools make net-tools sysstat vnstat
+apt install -y bash-completion dnsutils git htop iftop iotop jq libguestfs-tools make net-tools sysstat vnstat zsh
 apt autoremove -y --purge
 apt autoclean -y
 systemctl daemon-reload
