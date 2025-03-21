@@ -2,32 +2,33 @@
 
 # curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/scripts/setup_ubuntu_cloudimg_template.sh?$(date +%s)" | /bin/bash -s
 
-if [[ ! -f .cloudimage.env ]]; then
-   echo 'CLOUD_INIT_USERNAME=${CLOUD_INIT_USERNAME:-anvil}' > ~/.cloudimage.env
-   echo 'CLOUD_INIT_PASSWORD=${CLOUD_INIT_PASSWORD:-super_password}' >> ~/.cloudimage.env
-   echo 'CLOUD_INIT_PUBLIC_KEY=$(cat ~/.ssh/id_ed25519.pub)' >> ~/.cloudimage.env
-   echo 'VM_STORAGE=${VM_STORAGE:-local-lvm}' >> ~/.cloudimage.env
-   echo 'VM_TIMEZONE=$(cat /etc/timezone)' >> ~/.cloudimage.env
-   echo 'VM_SNIPPET_PATH=${VM_SNIPPET_PATH:-/var/lib/vz/snippets}' >> ~/.cloudimage.env
-   echo 'VM_SNIPPET_LOCATION=${VM_SNIPPET_LOCATION:-local}' >> ~/.cloudimage.env
-   echo 'GITHUB_PUBLIC_KEY_USERNAME=' >> ~/.cloudimage.env
+CLOUDIMAGE_ENV_FILE=~/.cloudimage.env
+if [[ ! -f ${CLOUDIMAGE_ENV_FILE} ]]; then
+   echo 'CLOUD_INIT_USERNAME=${CLOUD_INIT_USERNAME:-anvil}' > ${CLOUDIMAGE_ENV_FILE}
+   echo 'CLOUD_INIT_PASSWORD=${CLOUD_INIT_PASSWORD:-super_password}' >> ${CLOUDIMAGE_ENV_FILE}
+   echo 'CLOUD_INIT_PUBLIC_KEY=$(cat ~/.ssh/id_ed25519.pub)' >> ${CLOUDIMAGE_ENV_FILE}
+   echo 'VM_STORAGE=${VM_STORAGE:-local-lvm}' >> ${CLOUDIMAGE_ENV_FILE}
+   echo 'VM_TIMEZONE=$(cat /etc/timezone)' >> ${CLOUDIMAGE_ENV_FILE}
+   echo 'VM_SNIPPET_PATH=${VM_SNIPPET_PATH:-/var/lib/vz/snippets}' >> ${CLOUDIMAGE_ENV_FILE}
+   echo 'VM_SNIPPET_LOCATION=${VM_SNIPPET_LOCATION:-local}' >> ${CLOUDIMAGE_ENV_FILE}
+   echo 'GITHUB_PUBLIC_KEY_USERNAME=' >> ${CLOUDIMAGE_ENV_FILE}
 
-   echo "please edit the .cloudimage.env file and then rerun the same command to create the template VM"
+   echo "please edit the ${CLOUDIMAGE_ENV_FILE} file and then rerun the same command to create the template VM"
    exit 1
 fi
 
 echo "checking for installed dependencies..."
 apt-get install -y jq
 
-eval export $(cat ~/.cloudimage.env)
+eval export $(cat ${CLOUDIMAGE_ENV_FILE})
 
 if [ -z "$CLOUD_INIT_USERNAME" ]; then
-  echo 'CLOUD_INIT_USERNAME is undefined, please check your .cloudimage.env file! Exiting!'        
+  echo "CLOUD_INIT_USERNAME is undefined, please check your ${CLOUDIMAGE_ENV_FILE} file! Exiting!"
   exit 1
 fi
 
 if [ -z "$CLOUD_INIT_PASSWORD" ]; then
-  echo 'CLOUD_INIT_PASSWORD is undefined, please check your .cloudimage.env file! Exiting!'        
+  echo "CLOUD_INIT_PASSWORD is undefined, please check your ${CLOUDIMAGE_ENV_FILE} file! Exiting!"
   exit 1
 fi
 
@@ -35,7 +36,7 @@ if [ -z "$CLOUD_INIT_PUBLIC_KEY" ]; then
   if [ ! -z "$GITHUB_PUBLIC_KEY_USERNAME" ]; then
     CLOUD_INIT_PUBLIC_KEY=$(wget -qO- https://github.com/$GITHUB_PUBLIC_KEY_USERNAME.keys | head -n1)
   else
-    echo 'CLOUD_INIT_PUBLIC_KEY and GITHUB_PUBLIC_KEY_USERNAME are undefined, please check your .cloudimage.env file! Exiting!'        
+    echo "CLOUD_INIT_PUBLIC_KEY and GITHUB_PUBLIC_KEY_USERNAME are undefined, please check your ${CLOUDIMAGE_ENV_FILE} file! Exiting!"       
     exit 1
   fi
 fi
