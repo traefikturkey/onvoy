@@ -6,9 +6,7 @@ if [[ ! -f .cloudimage.env ]]; then
    echo 'CLOUD_INIT_USERNAME=${CLOUD_INIT_USERNAME:-anvil}' > .cloudimage.env
    echo 'CLOUD_INIT_PASSWORD=${CLOUD_INIT_PASSWORD:-super_password}' >> .cloudimage.env
    echo 'CLOUD_INIT_PUBLIC_KEY=$(cat ~/.ssh/id_ed25519.pub)' >> .cloudimage.env
-   echo 'VM_ID=${VM_ID:-9000}' >> .cloudimage.env
    echo 'VM_STORAGE=${VM_STORAGE:-local-lvm}' >> .cloudimage.env
-   echo 'VM_NAME=${VM_NAME:-ubuntu-server-22.04-template}' >> .cloudimage.env
    echo 'VM_TIMEZONE=$(cat /etc/timezone)' >> .cloudimage.env
    echo 'VM_SNIPPET_PATH=${VM_SNIPPET_PATH:-/var/lib/vz/snippets}' >> .cloudimage.env
    echo 'VM_SNIPPET_LOCATION=${VM_SNIPPET_LOCATION:-local}' >> .cloudimage.env
@@ -42,6 +40,31 @@ if [ -z "$CLOUD_INIT_PUBLIC_KEY" ]; then
   fi
 fi
 
+# URL of the Ubuntu cloud image directory
+BASE_URL="https://cloud-images.ubuntu.com/releases/"
+
+# Fetch the latest LTS release version
+LATEST_LTS=$(curl -sL $BASE_URL | grep -P 'LTS' | grep -oP 'href="\d+\.\d+(\.\d+)?/"' | grep -oP '\d+\.\d+(\.\d+)?' | sort -Vr | head -n 1)
+
+# Construct the URL for the latest LTS cloud image
+IMAGE_URL="${BASE_URL}${LATEST_LTS}/release/"
+
+# Fetch the actual cloud image link (e.g., .img or .qcow2)
+LATEST_IMAGE=$(curl -sL $IMAGE_URL | grep -oP 'href=".*-server-cloudimg-amd64.img"' | head -n 1 | cut -d '"' -f 2)
+
+# Output the full download link
+if [[ -n "$LATEST_IMAGE" ]]; then
+   REMOTE_IMAGE_URL=${IMAGE_URL}${LATEST_IMAGE}
+   LOCAL_IMAGE_PATH=/tmp/${LATEST_IMAGE}
+   
+   # Create VM_ID by removing periods from LATEST_LTS
+   VM_ID=$(echo "$LATEST_LTS" | tr -d '.')
+   VM_NAME=ubuntu-server-${LATEST_LTS}-template
+else
+    echo "Failed to retrieve the latest Ubuntu Server cloud image."
+    exit -1
+fi
+
 echo "preparing to create $VM_NAME:$VM_ID with user $CLOUD_INIT_USERNAME stored in $VM_STORAGE"
 
 export TEMPLATE_EXISTS=$(qm list | grep -v grep | grep -ci $VM_ID)
@@ -57,9 +80,9 @@ if [[ $TEMPLATE_EXISTS > 0 ]]; then
    qm stop $VM_ID --skiplock && qm destroy $VM_ID --destroy-unreferenced-disks --purge
 fi
 
-if [[ ! -f /tmp/jammy-server-cloudimg-amd64.img ]]; then 
+if [[ ! -f $LOCAL_IMAGE_PATH ]]; then 
    echo "downloading cloudimg file..."
-   curl -s https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img > /tmp/jammy-server-cloudimg-amd64.img
+   curl -sL $REMOTE_IMAGE_URL > $LOCAL_IMAGE_PATH
 fi
 
 mkdir -p /var/lib/vz/snippets/
@@ -87,7 +110,7 @@ echo "creating new VM..."
 qm create $VM_ID --memory 2048 --cores 4 --cpu cputype=host --machine q35 --bios ovmf --net0 virtio,bridge=vmbr0 
 
 echo "importing cloudimg $VM_STORAGE storage..."
-qm importdisk $VM_ID /tmp/jammy-server-cloudimg-amd64.img $VM_STORAGE --format qcow2 | grep -v 'transferred'
+qm importdisk $VM_ID $LOCAL_IMAGE_PATH $VM_STORAGE --format qcow2 | grep -v 'transferred'
 
 # finally attach the new disk to the VM as scsi drive
 echo "setting vm options..."
