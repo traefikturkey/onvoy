@@ -3,14 +3,14 @@
 # curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/scripts/setup_ubuntu_cloudimg_template.sh?$(date +%s)" | /bin/bash -s
 
 if [[ ! -f .cloudimage.env ]]; then
-   echo 'CLOUD_INIT_USERNAME=${CLOUD_INIT_USERNAME:-anvil}' > .cloudimage.env
-   echo 'CLOUD_INIT_PASSWORD=${CLOUD_INIT_PASSWORD:-super_password}' >> .cloudimage.env
-   echo 'CLOUD_INIT_PUBLIC_KEY=$(cat ~/.ssh/id_ed25519.pub)' >> .cloudimage.env
-   echo 'VM_STORAGE=${VM_STORAGE:-local-lvm}' >> .cloudimage.env
-   echo 'VM_TIMEZONE=$(cat /etc/timezone)' >> .cloudimage.env
-   echo 'VM_SNIPPET_PATH=${VM_SNIPPET_PATH:-/var/lib/vz/snippets}' >> .cloudimage.env
-   echo 'VM_SNIPPET_LOCATION=${VM_SNIPPET_LOCATION:-local}' >> .cloudimage.env
-   echo 'GITHUB_PUBLIC_KEY_USERNAME=' >> .cloudimage.env
+   echo 'CLOUD_INIT_USERNAME=${CLOUD_INIT_USERNAME:-anvil}' > ~/.cloudimage.env
+   echo 'CLOUD_INIT_PASSWORD=${CLOUD_INIT_PASSWORD:-super_password}' >> ~/.cloudimage.env
+   echo 'CLOUD_INIT_PUBLIC_KEY=$(cat ~/.ssh/id_ed25519.pub)' >> ~/.cloudimage.env
+   echo 'VM_STORAGE=${VM_STORAGE:-local-lvm}' >> ~/.cloudimage.env
+   echo 'VM_TIMEZONE=$(cat /etc/timezone)' >> ~/.cloudimage.env
+   echo 'VM_SNIPPET_PATH=${VM_SNIPPET_PATH:-/var/lib/vz/snippets}' >> ~/.cloudimage.env
+   echo 'VM_SNIPPET_LOCATION=${VM_SNIPPET_LOCATION:-local}' >> ~/.cloudimage.env
+   echo 'GITHUB_PUBLIC_KEY_USERNAME=' >> ~/.cloudimage.env
 
    echo "please edit the .cloudimage.env file and then rerun the same command to create the template VM"
    exit 1
