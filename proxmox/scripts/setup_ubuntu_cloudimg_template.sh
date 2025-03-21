@@ -19,7 +19,7 @@ fi
 echo "checking for installed dependencies..."
 apt-get install -y jq
 
-eval export $(cat .cloudimage.env)
+eval export $(cat ~/.cloudimage.env)
 
 if [ -z "$CLOUD_INIT_USERNAME" ]; then
   echo 'CLOUD_INIT_USERNAME is undefined, please check your .cloudimage.env file! Exiting!'        
