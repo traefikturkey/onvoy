@@ -13,3 +13,8 @@ curl -s https://raw.githubusercontent.com/traefikturkey/onvoy/master/ubuntu/bash
 ```
 curl -s https://raw.githubusercontent.com/traefikturkey/onvoy/master/ubuntu/bash/node_exporter_setup.sh?$(date +%s) | /bin/bash -s | tee node_exporter_build.log
 ```
+
+## Setup Podman
+```
+curl -s https://raw.githubusercontent.com/traefikturkey/onvoy/refs/heads/main/ubuntu/bash/podman_server_setup.sh?$(date +%s) | /bin/bash -s | tee podman_build.log
+```
