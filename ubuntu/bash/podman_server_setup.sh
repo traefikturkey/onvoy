@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# curl -s https://raw.githubusercontent.com/traefikturkey/onvoy/refs/heads/main/ubuntu/bash/podman_server_setup.sh?$(date +%s) | /bin/bash -s | tee podman_build.log
+
 sudo apt -y install podman
 sudo apt -y install podman-docker
 
