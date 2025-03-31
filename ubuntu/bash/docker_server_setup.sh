@@ -1,7 +1,5 @@
 #!/bin/sh
 
-
-
 ###########################################################
 # Install and Setup Docker
 ###########################################################
@@ -34,7 +32,7 @@ sudo chmod +x $DOCKER_CLI_PLUGIN_PATH/docker-compose
 
 # docker compose is now a built in command but you can
 # uncomment the line below to setup docker-compose command 
-sudo ln -s  $DOCKER_CLI_PLUGIN_PATH/docker-compose /usr/local/bin/docker-compose
+# sudo ln -s  $DOCKER_CLI_PLUGIN_PATH/docker-compose /usr/local/bin/docker-compose
 
 ###########################################################
 # disable-hugepages.service
