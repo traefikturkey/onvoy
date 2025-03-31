@@ -122,6 +122,8 @@ sudo systemctl start disable-hugepages.service
 
 # Fire and forget
 export DEBIAN_FRONTEND=noninteractive
+
+# disable autorestart prompt and you know just auto restart
 # https://askubuntu.com/a/1421221
 sudo sed -i 's/#$nrconf{restart} = '"'"'i'"'"';/$nrconf{restart} = '"'"'a'"'"';/g' /etc/needrestart/needrestart.conf
 
