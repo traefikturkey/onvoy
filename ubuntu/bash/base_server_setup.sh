@@ -113,8 +113,8 @@ sudo sed -i 's/#$nrconf{restart} = '"'"'i'"'"';/$nrconf{restart} = '"'"'a'"'"';/
 # Avoiding unnecessary packages
 # Since we are trying to make this system as minimal as possible, 
 # we should make sure only the required packages are installed without 
-# having to provide the --no-install-recommends option every time
-echo "set default apt to --no-install-recommends"
+# having to provide the --no-install-suggests option every time
+echo "set default apt to --no-install-suggests"
 sudo tee -a /etc/apt/apt.conf.d/99local >/dev/null <<'EOF'
 APT::Install-Suggests "0";
 APT::Install-Recommends "1";
