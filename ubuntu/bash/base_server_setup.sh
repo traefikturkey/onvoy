@@ -2,6 +2,40 @@
 
 # curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/refs/heads/main/ubuntu/bash/base_server_setup.sh?$(date +%s)" | /bin/bash -s
 
+# Fire and forget
+export DEBIAN_FRONTEND=noninteractive
+
+# disable pending kernel upgrade message
+# https://askubuntu.com/a/1424249
+sed -i "s/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g" /e
+
+# disable autorestart prompt and you know just auto restart
+# https://askubuntu.com/a/1421221
+sudo sed -i 's/#$nrconf{restart} = '"'"'i'"'"';/$nrconf{restart} = '"'"'a'"'"';/g' /etc/needrestart/needrestart.conf
+
+# Avoiding unnecessary packages
+# Since we are trying to make this system as minimal as possible, 
+# we should make sure only the required packages are installed without 
+# having to provide the --no-install-suggests option every time
+echo "set default apt to --no-install-suggests"
+sudo tee -a /etc/apt/apt.conf.d/99local >/dev/null <<'EOF'
+APT::Install-Suggests "0";
+APT::Install-Recommends "1";
+Apt::Cmd::Disable-Script-Warning "true";
+Dpkg::Options {
+   "--force-confdef";
+   "--force-confold";
+}
+EOF
+echo "prevent packages from installing unwanted locales"
+sudo tee -a /etc/dpkg/dpkg.cfg.d/01_nolocales >/dev/null <<'EOF'
+path-exclude /usr/share/locale/*
+path-include /usr/share/locale/en*
+EOF
+
+sudo apt-get update
+sudo apt-get full-upgrade -y
+
 # quiet down the console
 echo "3 4 1 3" | sudo tee /proc/sys/kernel/printk
 echo "kernel.printk = 3 4 1 3" | sudo tee --append /etc/sysctl.conf
@@ -103,35 +137,7 @@ EOF
     sudo systemctl daemon-reexec
 fi
 
-# Fire and forget
-export DEBIAN_FRONTEND=noninteractive
 
-# disable autorestart prompt and you know just auto restart
-# https://askubuntu.com/a/1421221
-sudo sed -i 's/#$nrconf{restart} = '"'"'i'"'"';/$nrconf{restart} = '"'"'a'"'"';/g' /etc/needrestart/needrestart.conf
-
-# Avoiding unnecessary packages
-# Since we are trying to make this system as minimal as possible, 
-# we should make sure only the required packages are installed without 
-# having to provide the --no-install-suggests option every time
-echo "set default apt to --no-install-suggests"
-sudo tee -a /etc/apt/apt.conf.d/99local >/dev/null <<'EOF'
-APT::Install-Suggests "0";
-APT::Install-Recommends "1";
-Apt::Cmd::Disable-Script-Warning "true";
-Dpkg::Options {
-   "--force-confdef";
-   "--force-confold";
-}
-EOF
-echo "prevent packages from installing unwanted locales"
-sudo tee -a /etc/dpkg/dpkg.cfg.d/01_nolocales >/dev/null <<'EOF'
-path-exclude /usr/share/locale/*
-path-include /usr/share/locale/en*
-EOF
-
-sudo apt-get update
-sudo apt-get full-upgrade -y
 
 # prevent blk_update_request: I/O error, dev fd0, sector 0 on console
 # sudo rmmod floppy
