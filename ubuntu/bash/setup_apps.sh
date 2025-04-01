@@ -36,11 +36,11 @@ mount "${DEVICE}1" "$MOUNT_POINT"
 
 # Set ownership
 echo "Setting ownership..."
-chown "$USER:$USER" "$MOUNT_POINT"
+chown -R "$USER:$USER" "$MOUNT_POINT"
 
 # Add to fstab
 echo "Configuring persistent mount..."
 UUID=$(blkid -o value -s UUID "${DEVICE}1")
-echo "UUID=$UUID $MOUNT_POINT ext4 defaults,uid=$USER,gid=$USER 0 2" | tee -a /etc/fstab
+echo "UUID=$UUID $MOUNT_POINT ext4 defaults 0 2" | tee -a /etc/fstab
 
 echo "Operation completed successfully"
