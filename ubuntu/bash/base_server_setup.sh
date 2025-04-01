@@ -33,8 +33,8 @@ echo "net.ipv6.conf.all.disable_ipv6=1" | sudo tee --append /etc/sysctl.conf
 echo "net.ipv6.conf.default.disable_ipv6=1" | sudo tee --append /etc/sysctl.conf
 
 # basic system administration packages
-sudo apt update
-sudo apt install -y \
+sudo apt-get update
+sudo apt-get install -y \
     anacron \
     apt-transport-https \
     btop \
@@ -57,7 +57,7 @@ sudo apt install -y \
     software-properties-common \
     vnstat
     
-sudo apt purge -y landscape-common
+sudo apt-get purge -y landscape-common
 
 # Disable Ubuntu motd spam
 sudo systemctl disable motd-news.timer
@@ -130,8 +130,8 @@ path-exclude /usr/share/locale/*
 path-include /usr/share/locale/en*
 EOF
 
-sudo apt update
-sudo apt dist-upgrade -y
+sudo apt-get update
+sudo apt-get full-upgrade -y
 
 # prevent blk_update_request: I/O error, dev fd0, sector 0 on console
 # sudo rmmod floppy
@@ -144,7 +144,7 @@ sudo apt dist-upgrade -y
 sudo snap remove lxd
 sudo snap remove core18
 sudo snap remove snapd
-sudo apt purge snapd -y
+sudo apt-get purge snapd -y
 
 ###########################################################
 # setup users environment
@@ -194,8 +194,8 @@ sudo chmod +x /etc/cron.weekly/update-system
 # cleanup any mess we made
 ###########################################################
 echo "cleaning up uneeded packages..."
-sudo apt autoremove -y --purge
-sudo apt autoclean -y
+sudo apt-get autoremove -y --purge
+sudo apt-get autoclean -y
 
 echo "reloading profile"
 source $HOME/.profile
