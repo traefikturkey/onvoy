@@ -6,20 +6,20 @@
 
 ## Setup Base Server 
 ```
-curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/refs/heads/main/ubuntu/bash/base_server_setup.sh?$(date +%s)" | /bin/bash -s | tee server_setup.log
+curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/refs/heads/main/ubuntu/bash/base_server_setup.sh?$(date +%s)" | /bin/bash -s | tee ~/server_setup.log
 ```
 
 ## Setup Docker Server
 ```
-curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/ubuntu/bash/docker_server_setup.sh?$(date +%s)" | /bin/bash -s | tee docker_build.log
+curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/ubuntu/bash/docker_server_setup.sh?$(date +%s)" | /bin/bash -s | tee ~/docker_build.log
 ```
 
 ## Setup Node Exporter for Prometheus
 ```
-curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/ubuntu/bash/node_exporter_setup.sh?$(date +%s)" | /bin/bash -s | tee node_exporter_build.log
+curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/ubuntu/bash/node_exporter_setup.sh?$(date +%s)" | /bin/bash -s | tee ~/node_exporter_build.log
 ```
 
 ## Setup Podman
 ```
-curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/refs/heads/main/ubuntu/bash/podman_server_setup.sh?$(date +%s)" | /bin/bash -s | tee podman_build.log
+curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/refs/heads/main/ubuntu/bash/podman_server_setup.sh?$(date +%s)" | /bin/bash -s | tee ~/podman_build.log
 ```
