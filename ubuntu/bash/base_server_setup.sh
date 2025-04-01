@@ -197,9 +197,6 @@ echo "cleaning up uneeded packages..."
 sudo apt-get autoremove -y --purge
 sudo apt-get autoclean -y
 
-echo "reloading profile"
-source $HOME/.profile
-
 echo "Setup Complete!"
 echo "You probably want to start a new session now!"
 # force new shell so we have groups and shizzle
