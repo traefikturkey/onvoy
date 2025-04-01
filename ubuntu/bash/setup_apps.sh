@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/refs/heads/main/ubuntu/bash/setup_apps.sh?$(date +%s)" | /bin/bash -s 
+
+
 # Configuration
 DEVICE=${1:-/dev/sdb}
 MOUNT_POINT="/apps"
