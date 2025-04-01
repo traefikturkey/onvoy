@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/refs/heads/main/ubuntu/bash/setup_apps.sh?$(date +%s)" | /bin/bash -s 
+# curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/refs/heads/main/ubuntu/bash/setup_apps.sh?$(date +%s)" | sudo /bin/bash -s 
 
 
 # Configuration
