@@ -20,5 +20,17 @@ fi
 
 # disable warning messages
 sudo sed -i 's/^#compose_warning_logs = true/compose_warning_logs = false/' /usr/share/containers/containers.conf
+sudo touch /etc/containers/nodocker
+
+# rootless cannot expose privileged port by default
+sudo sysctl net.ipv4.ip_unprivileged_port_start=53
+echo "net.ipv4.ip_unprivileged_port_start=53" | sudo tee --append /etc/sysctl.conf
+
+sudo systemctl enable podman.socket
+sudo systemctl start podman.socket
+
+systemctl --user enable podman.socket
+systemctl --user start podman.socket
+systemctl --user status podman.socket
 
 podman compose version
