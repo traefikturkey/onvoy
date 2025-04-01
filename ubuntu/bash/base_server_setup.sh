@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/refs/heads/main/ubuntu/bash/base_server_setup.sh?$(date +%s)" | /bin/bash -s
+
 # quiet down the console
 echo "3 4 1 3" | sudo tee /proc/sys/kernel/printk
 echo "kernel.printk = 3 4 1 3" | sudo tee --append /etc/sysctl.conf
