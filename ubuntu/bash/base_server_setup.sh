@@ -118,7 +118,7 @@ echo "set default apt to --no-install-suggests"
 sudo tee -a /etc/apt/apt.conf.d/99local >/dev/null <<'EOF'
 APT::Install-Suggests "0";
 APT::Install-Recommends "1";
-Apt::Cmd::Disable-Script-Warning "0";
+Apt::Cmd::Disable-Script-Warning "true";
 Dpkg::Options {
    "--force-confdef";
    "--force-confold";
