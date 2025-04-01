@@ -5,12 +5,12 @@
 # Fire and forget
 export DEBIAN_FRONTEND=noninteractive
 
-# disable pending kernel upgrade message
 # https://askubuntu.com/a/1424249
-sed -i "s/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g" /e
+echo "disable pending kernel upgrade message"
+sudo sed -i "s/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g" /etc/needrestart/needrestart.conf
 
-# disable autorestart prompt and you know just auto restart
 # https://askubuntu.com/a/1421221
+echo "disable autorestart message"
 sudo sed -i 's/#$nrconf{restart} = '"'"'i'"'"';/$nrconf{restart} = '"'"'a'"'"';/g' /etc/needrestart/needrestart.conf
 
 # Avoiding unnecessary packages
@@ -137,8 +137,6 @@ EOF
     sudo systemctl daemon-reexec
 fi
 
-
-
 # prevent blk_update_request: I/O error, dev fd0, sector 0 on console
 # sudo rmmod floppy
 # echo "blacklist floppy" | sudo tee /etc/modprobe.d/blacklist-floppy.conf
@@ -205,5 +203,3 @@ sudo apt-get autoclean -y
 
 echo "Setup Complete!"
 echo "You probably want to start a new session now!"
-# force new shell so we have groups and shizzle
-#exec su -l $USER
