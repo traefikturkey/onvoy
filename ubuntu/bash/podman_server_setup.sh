@@ -2,8 +2,7 @@
 
 # curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/refs/heads/main/ubuntu/bash/podman_server_setup.sh?$(date +%s)" | /bin/bash -s | tee podman_build.log
 
-sudo apt -y install podman
-sudo apt -y install podman-docker
+sudo apt -y install podman podman-docker slirp4netns uidmap
 
 if [ -e /usr/local/bin/docker-compose ]; then
   echo "docker-compose already installed!"
