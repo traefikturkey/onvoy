@@ -103,14 +103,12 @@ EOF
     sudo systemctl daemon-reexec
 fi
 
-
 # Fire and forget
 export DEBIAN_FRONTEND=noninteractive
 
 # disable autorestart prompt and you know just auto restart
 # https://askubuntu.com/a/1421221
 sudo sed -i 's/#$nrconf{restart} = '"'"'i'"'"';/$nrconf{restart} = '"'"'a'"'"';/g' /etc/needrestart/needrestart.conf
-
 
 # Avoiding unnecessary packages
 # Since we are trying to make this system as minimal as possible, 
@@ -120,6 +118,7 @@ echo "set default apt to --no-install-recommends"
 sudo tee -a /etc/apt/apt.conf.d/99local >/dev/null <<'EOF'
 APT::Install-Suggests "0";
 APT::Install-Recommends "1";
+Apt::Cmd::Disable-Script-Warning "0";
 Dpkg::Options {
    "--force-confdef";
    "--force-confold";
