@@ -2,6 +2,11 @@
 
 # curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/refs/heads/main/ubuntu/bash/podman_server_setup.sh?$(date +%s)" | /bin/bash -s | tee ~/podman_build.log
 
+# update if not done recently 
+if [ -z "$(find /var/lib/apt/lists -maxdepth 1 -mmin -60)" ]; then
+  apt-get update
+fi
+
 sudo apt -y install podman podman-docker slirp4netns uidmap
 
 if [ -e /usr/local/bin/docker-compose ]; then
