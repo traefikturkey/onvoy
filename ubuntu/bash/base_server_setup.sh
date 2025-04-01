@@ -117,7 +117,7 @@ sudo sed -i 's/#$nrconf{restart} = '"'"'i'"'"';/$nrconf{restart} = '"'"'a'"'"';/
 echo "set default apt to --no-install-recommends"
 sudo tee -a /etc/apt/apt.conf.d/99local >/dev/null <<'EOF'
 APT::Install-Suggests "0";
-APT::Install-Recommends "0";
+APT::Install-Recommends "1";
 Dpkg::Options {
    "--force-confdef";
    "--force-confold";
