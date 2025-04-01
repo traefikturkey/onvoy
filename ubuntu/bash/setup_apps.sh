@@ -37,13 +37,16 @@ mkdir -p "$MOUNT_POINT"
 echo "Mounting partition..."
 mount "${DEVICE}1" "$MOUNT_POINT"
 
-# Set ownership
-echo "Setting ownership..."
-chown -R "$USER:$USER" "$MOUNT_POINT"
-
 # Add to fstab
 echo "Configuring persistent mount..."
 UUID=$(blkid -o value -s UUID "${DEVICE}1")
 echo "UUID=$UUID $MOUNT_POINT ext4 defaults 0 2" | tee -a /etc/fstab
+
+# remove lost+found directory
+rm -r /apps/*
+
+# Set ownership
+echo "Setting ownership..."
+chown -R $USER:$USER $MOUNT_POINT
 
 echo "Operation completed successfully"
