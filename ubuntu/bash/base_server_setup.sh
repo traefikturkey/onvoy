@@ -55,8 +55,8 @@ echo "vm.swappiness=1" | sudo tee --append /etc/sysctl.conf
 
 # Set Timezone of server
 # timedatectl list-timezones
-# sudo timedatectl set-timezone America/New_York
-sudo timedatectl set-timezone America/Los_Angeles
+sudo timedatectl set-timezone America/New_York
+#sudo timedatectl set-timezone America/Los_Angeles
 sudo timedatectl set-local-rtc 1 # 1=local 0=UTC
 sudo timedatectl set-ntp true
 
