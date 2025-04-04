@@ -26,20 +26,33 @@ package_update: true
 package_upgrade: true
 package_reboot_if_required: false
 packages:
+  - anacron
+  - bash-completion
+  - btop
+  - bwm-ng
+  - ca-certificates
   - curl
+  - dnsutils
   - git
-  - htop 
-  - ssh-import-id
+  - gnupg
+  - htop
+  - iftop
+  - iotop
   - libpam-systemd
+  - logrotate
+  - lsb-release
   - make
   - nano
   - net-tools
   - qemu-guest-agent
   - rsync
+  - software-properties-common
+  - ssh-import-id
   - strace
   - sysstat
   - sudo
   - unattended-upgrades
+  - vnstat
   - zsh
   - zsh-autosuggestions
   - zsh-syntax-highlighting
@@ -64,19 +77,55 @@ write_files:
       Requires=generate-ssh-keys.service
       After=generate-ssh-keys.service
 
+  - path: /etc/apt/apt.conf.d/99local
+    content: |
+      APT::Install-Suggests "0";
+      APT::Install-Recommends "1";
+      Apt::Cmd::Disable-Script-Warning "true";
+      Dpkg::Options {
+        "--force-confdef";
+        "--force-confold";
+      }
+
+  - path: /etc/dpkg/dpkg.cfg.d/01_nolocales
+      content: |
+        path-exclude /usr/share/locale/*
+        path-include /usr/share/locale/en*
+
 runcmd:
   - systemctl start qemu-guest-agent
   - snap remove $(snap list | grep -v snapd | awk '!/^Name|^core/ {print $1}')
   - snap remove snapd
-  - apt-get purge snapd -y
+  - apt-get purge snapd landscape-common -y
   - apt-get autoremove -y
   - apt-get autoclean -y
   - systemctl enable unattended-upgrades.service
   - systemctl start unattended-upgrades.service
   - systemctl enable generate-ssh-keys.service
   - systemctl start generate-ssh-keys.service
+  - systemctl disable motd-news.timer
+  - systemctl disable systemd-networkd-wait-online.service
+  - systemctl mask systemd-networkd-wait-online.service
   - systemctl daemon-reload
+  - sed -i 's/^ENABLED=.*/ENABLED=0/' /etc/default/motd-news
+  - rm -f /etc/legal
+  - chmod -x /etc/update-motd.d/10-help-text
+  - chmod -x /etc/update-motd.d/80-livepatch
+  - chmod -x /etc/update-motd.d/95-hwe-eol
+  - timedatectl set-local-rtc 1 # 1=local 0=UTC
+  - timedatectl set-ntp true
   - touch /home/$CLOUD_INIT_USERNAME/.sudo_as_admin_successful
+  - sysctl -w net.ipv6.conf.all.disable_ipv6=1
+  - sysctl -w net.ipv6.conf.default.disable_ipv6=1
+  - sysctl -w net.ipv6.conf.lo.disable_ipv6=1
+  - sysctl -w "kernel.printk = 3 4 1 3"
+  - sysctl -w vm.overcommit_memory=1
+  - sysctl -w net.core.somaxconn=1024
+  - sysctl -w vm.max_map_count=262144
+  - sysctl -w vm.swappiness=1
+  - sed -i "s/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g" /etc/needrestart/needrestart.conf
+  - sed -i 's/#$nrconf{restart} = '"'"'i'"'"';/$nrconf{restart} = '"'"'a'"'"';/g' /etc/needrestart/needrestart.conf
+  - curl -Ls https://raw.githubusercontent.com/traefikturkey/onvoy/main/shell/git/gitconfig -o /etc/gitconfig
   - curl -Ls https://raw.githubusercontent.com/traefikturkey/onvoy/main/proxmox/scripts/templates/cloudinit/sysprep > /usr/local/bin/sysprep
   - chmod +x /usr/local/bin/sysprep
   - /usr/local/bin/sysprep
@@ -87,3 +136,4 @@ network:
     eth0:
       dhcp4: true
       dhcp-identifier: mac
+      link-local: [ipv4]
