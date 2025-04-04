@@ -53,10 +53,13 @@ IMAGE_URL="${BASE_URL}${LATEST_LTS}/release/"
 # Fetch the actual cloud image link (e.g., .img or .qcow2)
 LATEST_IMAGE=$(curl -sL $IMAGE_URL | grep -oP 'href=".*-server-cloudimg-amd64.img"' | head -n 1 | cut -d '"' -f 2)
 
+TEMPLATE_PATH=~/.cloudimg/templates/cloudinit
+mkdir -p $TEMPLATE_PATH
+
 # Output the full download link
 if [[ -n "$LATEST_IMAGE" ]]; then
    REMOTE_IMAGE_URL=${IMAGE_URL}${LATEST_IMAGE}
-   LOCAL_IMAGE_PATH=/tmp/${LATEST_IMAGE}
+   LOCAL_IMAGE_PATH=~/.cloudimg/${LATEST_IMAGE}
    
    # Create VM_ID by removing periods from LATEST_LTS
    VM_ID=$(echo "$LATEST_LTS" | tr -d '.')
@@ -87,9 +90,6 @@ if [[ ! -f $LOCAL_IMAGE_PATH ]]; then
 fi
 
 mkdir -p $VM_SNIPPET_PATH
-
-TEMPLATE_PATH=~/.cloudimg/templates/cloudinit
-mkdir -p $TEMPLATE_PATH
 if [[ -f $TEMPLATE_PATH/template_cloudinit.yml ]]; then 
    echo "loading template cloudinit file..."
    envsubst < $TEMPLATE_PATH/template_cloudinit.yml > $VM_SNIPPET_PATH/template-user-data.yml
