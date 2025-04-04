@@ -53,13 +53,14 @@ IMAGE_URL="${BASE_URL}${LATEST_LTS}/release/"
 # Fetch the actual cloud image link (e.g., .img or .qcow2)
 LATEST_IMAGE=$(curl -sL $IMAGE_URL | grep -oP 'href=".*-server-cloudimg-amd64.img"' | head -n 1 | cut -d '"' -f 2)
 
-TEMPLATE_PATH=~/.cloudimg/templates/cloudinit
+CLOUDIMG_PATH=~/.cloudimg
+TEMPLATE_PATH=$CLOUDIMG_PATH/templates/cloudinit
 mkdir -p $TEMPLATE_PATH
 
 # Output the full download link
 if [[ -n "$LATEST_IMAGE" ]]; then
    REMOTE_IMAGE_URL=${IMAGE_URL}${LATEST_IMAGE}
-   LOCAL_IMAGE_PATH=~/.cloudimg/${LATEST_IMAGE}
+   LOCAL_IMAGE_PATH=$CLOUDIMG_PATH/${LATEST_IMAGE}
    
    # Create VM_ID by removing periods from LATEST_LTS
    VM_ID=$(echo "$LATEST_LTS" | tr -d '.')
@@ -112,7 +113,7 @@ echo "creating new VM..."
 qm create $VM_ID --memory 2048 --cores 4 --cpu cputype=host --machine q35 --bios ovmf --net0 virtio,bridge=vmbr0 
 
 echo "importing cloudimg $VM_STORAGE storage..."
-qm importdisk $VM_ID $LOCAL_IMAGE_PATH $VM_STORAGE --format qcow2 | grep -v 'transferred'
+qm importdisk $VM_ID $LOCAL_IMAGE_PATH $VM_STORAGE --format raw | grep -v 'transferred'
 
 # finally attach the new disk to the VM as scsi drive
 echo "setting vm options..."
@@ -131,16 +132,16 @@ qm set $VM_ID --agent enabled=1,type=virtio,fstrim_cloned_disks=1 --localtime 1
 
 # alternative, but the user-data.yml already has this
 # qm set $VM_ID --sshkey ~/.ssh/id_ed25519.pub
-qm set $VM_ID --cicustom "user=$VM_SNIPPET_LOCATION:snippets/template-user-data.yml" # qm cloudinit dump 9000 user
+qm set $VM_ID --cicustom "user=$VM_SNIPPET_LOCATION:snippets/template-user-data.yml" # qm cloudinit dump $VM_ID user
 
 # enable the line below to generate
-# log console output to /tmp/serial.$VM_ID.log
+# log console output to $CLOUDIMG_PATH/serial.$VM_ID.log
 # useful for debugging cloud-init issues
 #qm terminal $VM_ID --iface serial0
 #qm set $VM_ID --serial1 socket --vga serial1
 qm set $VM_ID --serial0 socket #--vga serial0
-qm set $VM_ID -args "-chardev file,id=char0,mux=on,path=/tmp/serial.$VM_ID.log,signal=off -serial chardev:char0"
-rm -rf /tmp/serial.$VM_ID.log || true
+qm set $VM_ID -args "-chardev file,id=char0,mux=on,path=$CLOUDIMG_PATH/serial.$VM_ID.log,signal=off -serial chardev:char0"
+rm -rf $CLOUDIMG_PATH/serial.$VM_ID.log || true
 
 echo "starting template vm..."
 qm start $VM_ID
@@ -149,7 +150,7 @@ echo "waiting for QEMU guest agent to start..."
 echo ""
 echo "================================================================="
 echo "run the following in another terminal to watch the VM's progress:"
-echo "tail -f /tmp/serial.$VM_ID.log"
+echo "tail -f $CLOUDIMG_PATH/serial.$VM_ID.log"
 echo "================================================================="
 echo ""
 
@@ -161,8 +162,19 @@ done
 echo "Cloud-init of template completed!"
 
 if [ ! -z "$GITHUB_PUBLIC_KEY_USERNAME" ]; then
-   echo "importing ssh public keys from Github user $GITHUB_PUBLIC_KEY_USERNAME..."
-   qm guest exec $VM_ID -- /bin/bash -c "ssh-import-id -o /home/$CLOUD_INIT_USERNAME/.ssh/authorized_keys gh:$GITHUB_PUBLIC_KEY_USERNAME "
+  echo "importing ssh public keys from Github user $GITHUB_PUBLIC_KEY_USERNAME..."
+  qm guest exec $VM_ID -- /bin/bash -c "ssh-import-id -o /home/$CLOUD_INIT_USERNAME/.ssh/authorized_keys gh:$GITHUB_PUBLIC_KEY_USERNAME "
+
+  # GitHub API URL
+  GITHUB_API_URL="https://api.github.com/users/$GITHUB_PUBLIC_KEY_USERNAME/repos"
+
+  # Fetch the list of repositories and check for 'dotfiles'
+  if curl -s "$GITHUB_API_URL" | grep -q '"name": "dotfiles"'; then
+    echo "Dotfiles repository found for user: $GITHUB_PUBLIC_KEY_USERNAME"
+    qm guest exec $VM_ID -- /bin/bash -c "git clone https://github.com/ilude/dotfiles.git /home/$CLOUD_INIT_USERNAME/.dotfiles"
+  fi
+
+  qm guest exec $VM_ID -- /bin/bash -c "chown -R $CLOUD_INIT_USERNAME:$CLOUD_INIT_USERNAME /home/$CLOUD_INIT_USERNAME"
 fi
 
 echo "setting user $CLOUD_INIT_USERNAME password..."
@@ -174,12 +186,12 @@ qm guest exec $VM_ID -- /bin/bash -c 'cloud-init clean'
 
 echo "setting cloud-init to use user=$VM_SNIPPET_LOCATION:snippets/clone-user-data.yml..." 
 qm set $VM_ID --cicustom "user=$VM_SNIPPET_LOCATION:snippets/clone-user-data.yml" 
-# qm cloudinit dump 9000 user
+# qm cloudinit dump $VM_ID user
 
 echo "shutting down and converting to template VM..."
 qm shutdown $VM_ID
 qm stop $VM_ID
-# remove serial logging to /tmp/serial.$VM_ID.log
+
 qm set $VM_ID --delete args
 qm template $VM_ID
 echo "Operations Completed!"
