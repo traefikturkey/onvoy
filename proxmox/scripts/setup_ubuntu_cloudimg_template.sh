@@ -86,25 +86,26 @@ if [[ ! -f $LOCAL_IMAGE_PATH ]]; then
    curl -sL $REMOTE_IMAGE_URL > $LOCAL_IMAGE_PATH
 fi
 
-mkdir -p /var/lib/vz/snippets/
-if [[ -f ./templates/cloudinit/template_cloudinit.yml ]]; then 
+mkdir -p $VM_SNIPPET_PATH
+
+TEMPLATE_PATH=~/.cloudimg/templates/cloudinit
+mkdir -p $TEMPLATE_PATH
+if [[ -f $TEMPLATE_PATH/template_cloudinit.yml ]]; then 
    echo "loading template cloudinit file..."
-   envsubst < ./templates/cloudinit/template_cloudinit.yml > $VM_SNIPPET_PATH/template-user-data.yml
+   envsubst < $TEMPLATE_PATH/template_cloudinit.yml > $VM_SNIPPET_PATH/template-user-data.yml
 else
    echo "downloading template cloudinit file..."
-   curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/scripts/templates/cloudinit/template_cloudinit.yml?$(date +%s)" > /tmp/template_cloudinit.yml
-   envsubst < /tmp/template_cloudinit.yml > $VM_SNIPPET_PATH/template-user-data.yml
-   rm -f /tmp/template_cloudinit.yml
+   curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/scripts/templates/cloudinit/template_cloudinit.yml?$(date +%s)" > $TEMPLATE_PATH/template_cloudinit.yml
+   envsubst < $TEMPLATE_PATH/template_cloudinit.yml > $VM_SNIPPET_PATH/template-user-data.yml
 fi
 
-if [[ -f ./templates/cloudinit/clone_cloudinit.yml ]]; then 
+if [[ -f $TEMPLATE_PATH/clone_cloudinit.yml ]]; then 
    echo "loading clone cloudinit file..."
-   envsubst < ./templates/cloudinit/clone_cloudinit.yml > $VM_SNIPPET_PATH/clone-user-data.yml
+   envsubst < $TEMPLATE_PATH/clone_cloudinit.yml > $VM_SNIPPET_PATH/clone-user-data.yml
 else
    echo "downloading clone cloudinit file..."
-   curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/scripts/templates/cloudinit/clone_cloudinit.yml?$(date +%s)" > /tmp/clone_cloudinit.yml
-   envsubst < /tmp/clone_cloudinit.yml > $VM_SNIPPET_PATH/clone-user-data.yml
-   rm -f /tmp/clone_cloudinit.yml
+   curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/master/proxmox/scripts/templates/cloudinit/clone_cloudinit.yml?$(date +%s)" > $TEMPLATE_PATH/clone_cloudinit.yml
+   envsubst < $TEMPLATE_PATH/clone_cloudinit.yml > $VM_SNIPPET_PATH/clone-user-data.yml
 fi
 
 echo "creating new VM..."
