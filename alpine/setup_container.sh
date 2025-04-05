@@ -23,6 +23,9 @@ apk add \
     git-zsh-completion \
     openrc-zsh-completion 
 
+echo "net.ipv6.conf.all.disable_ipv6 = 1" > /etc/sysctl.d/local.conf
+sysctl -p /etc/sysctl.d/local.conf
+
 sed -i 's/^AllowTcpForwarding no/AllowTcpForwarding yes/' /etc/ssh/sshd_config
 rc-update add sshd
 rc-service sshd restart
