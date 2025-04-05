@@ -1,34 +1,38 @@
 #!/bin/bash
 
 apk add \
-    cloud-init \
+    bash \
+    bash-completion \
     coreutils \
     curl \
-    e2fsprogs-extra \
     gcompat \
     git \
     libstdc++ \
     openssh-server \
-    qemu-guest-agent \
-    serf \
+    python3 \
+    py3-pip \
     sudo \
-    util-linux 
+    util-linux  \
+    zsh \
+    zsh-autosuggestions \
+    zsh-completions \
+    zsh-syntax-highlighting \
+    zsh-vcs \
+    apk-tools-zsh-completion \
+    curl-zsh-completion \
+    git-zsh-completion \
+    openrc-zsh-completion 
 
 sed -i 's/^AllowTcpForwarding no/AllowTcpForwarding yes/' /etc/ssh/sshd_config
 rc-update add sshd
 rc-service sshd restart
 
-rc-update add qemu-guest-agent
-rc-service qemu-guest-agent restart
-
-sed -i 's/^datasource_list:.*$/datasource_list: [NoCloud]/' /etc/cloud/cloud.cfg
-
 passwd -d root
-setup-cloud-init
 
 # Create user 'anvil' if it doesn't exist
 if ! id "anvil" >/dev/null 2>&1; then
     adduser -D anvil
+    passwd anvil
     echo "User 'anvil' created."
 else
     echo "User 'anvil' already exists."
