@@ -34,7 +34,7 @@ passwd -d root
 
 # Create user 'anvil' if it doesn't exist
 if ! id "anvil" >/dev/null 2>&1; then
-    adduser -D anvil
+    adduser -s $(which zsh) -D anvil
     passwd anvil
     echo "User 'anvil' created."
 else
