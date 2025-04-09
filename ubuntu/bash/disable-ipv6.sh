@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# curl -s "https://raw.githubusercontent.com/traefikturkey/onvoy/refs/heads/main/ubuntu/bash/disable-ipv6.sh?$(date +%s)" | sudo /bin/bash -s  
+
 # Check root privileges
 if [ "$EUID" -ne 0 ]; then
   echo "Error: Please run as root"
