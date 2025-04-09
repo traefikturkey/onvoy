@@ -16,3 +16,5 @@ sysctl -w vm.overcommit_memory=1
 sysctl -w net.core.somaxconn=1024
 sysctl -w vm.max_map_count=262144
 sysctl -w vm.swappiness=1
+
+echo "You should reboot now for these changes to take effect!"
